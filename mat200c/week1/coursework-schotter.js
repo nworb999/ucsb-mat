@@ -59,6 +59,8 @@ function draw() {
             direction * angleIncrement * Math.pow(exponentialBase, count)
         );
 
+        // I copied this and the translate() call from you, it was 
+        // more readable than my early attempts with `square()`
         rect(0, 0, 30, 30);
 
         pop();
@@ -68,4 +70,3 @@ function draw() {
     }
   }
 }
-
