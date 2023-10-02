@@ -1,6 +1,9 @@
 # week 1
 
 ## schotter
+
+https://editor.p5js.org/nworb999/sketches/lkbu51XGh
+
 <img width="373" alt="Screen Shot 2023-10-02 at 2 07 00 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/d408d033-9101-488e-a88d-b47eadc66f7a">
 
 ## markov variation
