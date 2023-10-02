@@ -5,7 +5,7 @@
 // I used a markov chain because I had been researching it for another
 // project and I wanted more symmetry in the results.  
 
-// The boilerplate for markov chain from chatGPT.
+// The boilerplate for markov chain from chatGPT. 
 
 let maxRadius = 200;
 let radiusShift = 10;
@@ -30,6 +30,8 @@ function setup() {
   createCanvas(400, 700);
   background(255);
 
+  // this makes for a cooler animation 
+  // and I got it from chatGPT
   frameRate(10);
 
   x = width / 2;
