@@ -10,7 +10,7 @@ https://editor.p5js.org/nworb999/sketches/lkbu51XGh
 
 https://editor.p5js.org/nworb999/sketches/CFilQmvKl
 
-<img width="401" alt="Screen Shot 2023-10-02 at 2 08 13 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/21c47c8b-af40-4557-ace1-7c966a387217">
+<img width="397" alt="Screen Shot 2023-10-02 at 3 18 46 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/70ac2a8f-3b29-4d5e-a9f7-626a1945298a">
 
 <img width="403" alt="Screen Shot 2023-10-02 at 2 09 05 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/1ffbbf59-5710-4777-a116-61249947bcff">
 
