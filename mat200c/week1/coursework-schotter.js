@@ -1,15 +1,4 @@
-let gridHeight = 22;
-let gridWidth = 12;
-
-let count = 0;
-
-let currentAngle = 0;
-let angleIncrement = 10;
-let exponentialBaseAngle = 1.035;
-let angleDampingFactor = 800;
-
-let jitter = 10;
-let jitterDampingFactor = 50;
+// https://editor.p5js.org/nworb999/sketches/lkbu51XGh
 
 function setup() {
   createCanvas(500, 800);
@@ -38,29 +27,18 @@ function draw() {
         let direction = random() < 0.5 ? 1 : -1;
 
         let rawXShift =
-          direction *
-          jitter *
-          randomGaussian(
-            0,
-            Math.log(count + 1)
-          );
+          direction * jitter * randomGaussian(0, Math.log(count + 1));
         let xShift = rawXShift / jitterDampingFactor;
 
         let rawYShift =
-          direction *
-          jitter *
-          randomGaussian(
-            0,
-            Math.log(count + 1)
-          );
+          direction * jitter * randomGaussian(0, Math.log(count + 1));
         let yShift = rawYShift / jitterDampingFactor;
 
         push();
 
         let xPosition = 70 + column * 30 + xShift;
         let yPosition = 70 + row * 30 + yShift;
-        console.log(xShift);
-        console.log(yShift);
+
         translate(xPosition, yPosition);
 
         rotate(
@@ -71,9 +49,9 @@ function draw() {
               angleDampingFactor
         );
 
-        // I copied this and the translate call from you, it was
+        // I copied this and the translate() call from you, it was
         // more readable than my early attempts with `square()`
-        rect(15, 15, 30, 30);
+        rect(0, 0, 30, 30);
 
         pop();
 
@@ -82,5 +60,3 @@ function draw() {
     }
   }
 }
-
-
