@@ -1,5 +1,8 @@
 // I like this program because of the range of outcomes it can produce
 
+// I used a markov chain because I had been researching it for another 
+// project and I wanted more symmetry in the results
+
 let maxRadius = 200;
 let radiusShift = 10;
 let skewShift = 33;
@@ -34,7 +37,7 @@ function setup() {
 }
 
 function draw() {
-  while (counter < maxCalls) {
+  if (counter < maxCalls) {
     counter++;
 
     fill(255, 0);
