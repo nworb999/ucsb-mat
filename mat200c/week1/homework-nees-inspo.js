@@ -57,8 +57,8 @@ function draw() {
         r > maxRadius ? (r = maxRadius) : (r += radiusShift); // increase size
         break;
       case 1:
-        r < 10 ? (r = 10) : (r -= radiusShift);
-        // decrease size but don't let it disappear
+        r < 10 ? (r = 10) : (r -= radiusShift); // decrease size but don't let it disappear
+        // (not letting it disappear is from chatGPT)
         break;
       case 2:
         randomValue === 1 ? (x -= skewShift) : (x += skewShift); // skew horizontally
