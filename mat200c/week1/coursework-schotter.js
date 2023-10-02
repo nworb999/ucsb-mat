@@ -7,6 +7,17 @@
 
 // I have a much greater appreciation of the aesthetics of the original now.
 
+// I used chatGPT to simplify the code (it
+// came up with the clever random direction ternary)
+// and how to make the angle change exponential.  It also suggested
+// a dampingFactor when I was struggling
+// to make the positional shifts grow more slowly.
+
+// I decided to try randomGaussian() after
+// being unsatisfied with the symmetrical
+// looking results from just random()
+// (it looked like it was shifting back and forth too evenly)
+
 let gridHeight = 22;
 let gridWidth = 12;
 
@@ -26,16 +37,6 @@ function setup() {
   noLoop();
   rectMode(CENTER);
   angleMode(RADIANS);
-  // I used chatGPT to simplify the code (it
-  // came up with the clever random direction ternary)
-  // and how to make the angle change exponential.  It also suggested
-  // a dampingFactor when I was struggling
-  // to make the positional shifts grow more slowly.
-
-  // I decided to try randomGaussian() after
-  // being unsatisfied with the symmetrical
-  // looking results from just random()
-  // (it looked like it was shifting back and forth too evenly)
 }
 
 function draw() {
