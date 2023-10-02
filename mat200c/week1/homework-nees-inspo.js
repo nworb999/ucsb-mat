@@ -1,17 +1,17 @@
 // I like this program because of the range of outcomes it can produce
 
-// I used a markov chain because I had been researching it for another 
+// I used a markov chain because I had been researching it for another
 // project and I wanted more symmetry in the results
 
 let maxRadius = 200;
 let radiusShift = 10;
-let skewShift = 33;
+let skewShift = 33 + (1 / 3);
 
 let x, y, r;
 let state;
 
 let counter = 0;
-let maxCalls = 12 * 22;
+let maxCalls = 12 * 22; // same as nees
 
 // boilerplate for markov chain from chatGPT
 
