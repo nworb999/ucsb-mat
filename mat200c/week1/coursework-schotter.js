@@ -1,17 +1,25 @@
 // https://editor.p5js.org/nworb999/sketches/lkbu51XGh
 
+// I'm not even sure this is the best iteration but
+// I've retried this for hours now and I started
+// to feel like I was losing my mind because the longer I worked
+// the more I started noticing aspects of the original that made it so clean.
+
+// I have a much greater appreciation of the aesthetics of the original now.
+
 let gridHeight = 22;
 let gridWidth = 12;
 
 let count = 0;
 
-let currentAngle = 0;
+let a = 0;
 let angleIncrement = 10;
-let exponentialBaseAngle = 1.035;
-let angleDampingFactor = 800;
+let exponentialBaseAngle = 1.046;
+let angleDampingFactor = 10000;
 
-let jitter = 10;
-let jitterDampingFactor = 50;
+let x, y;
+let jitter = 50;
+let jitterDampingFactor = 1000;
 
 function setup() {
   createCanvas(500, 800);
@@ -39,39 +47,17 @@ function draw() {
       for (let column = 0; column < gridWidth; column++) {
         let direction = random() < 0.5 ? 1 : -1;
 
-        let rawXShift =
-          direction *
-          jitter *
-          randomGaussian(
-            0,
-            Math.log(count + 1)
-          );
-        let xShift = rawXShift / jitterDampingFactor;
-
-        let rawYShift =
-          direction *
-          jitter *
-          randomGaussian(
-            0,
-            Math.log(count + 1)
-          );
-        let yShift = rawYShift / jitterDampingFactor;
+        let xShift = getPositionShift(direction);
+        let yShift = getPositionShift(direction);
 
         push();
 
-        let xPosition = 70 + column * 30 + xShift;
-        let yPosition = 70 + row * 30 + yShift;
-        console.log(xShift);
-        console.log(yShift);
-        translate(xPosition, yPosition);
+        x = 70 + column * 30 + xShift;
+        y = 70 + row * 30 + yShift;
+        translate(x, y);
 
-        rotate(
-          currentAngle +
-            (direction *
-              angleIncrement *
-              Math.pow(exponentialBaseAngle, count)) /
-              angleDampingFactor
-        );
+        let angleShift = getAngleShift(direction);
+        rotate(a + angleShift);
 
         // I copied this and the translate call from you, it was
         // more readable than my early attempts with `square()`
@@ -84,3 +70,16 @@ function draw() {
     }
   }
 }
+
+function getPositionShift(direction) {
+  let directionShift =
+    direction * jitter * randomGaussian(0, Math.log(count + 1));
+  return directionShift / jitterDampingFactor;
+}
+
+function getAngleShift(direction) {
+  let angleShift =
+    direction * angleIncrement * Math.pow(exponentialBaseAngle, count);
+  return angleShift / angleDampingFactor;
+}
+
