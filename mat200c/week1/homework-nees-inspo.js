@@ -7,7 +7,7 @@
 
 // The boilerplate for markov chain is from chatGPT. 
 
-let maxRadius = 200;
+let maxRadius = 100;
 let radiusShift = 10;
 let skewShift = 33 + (1 / 3);
 
