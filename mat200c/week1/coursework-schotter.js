@@ -26,11 +26,11 @@ let count = 0;
 let a = 0;
 let angleIncrement = 10;
 let exponentialBaseAngle = 1.046;
-let angleDampingFactor = 10000;
+let angleDampingFactor = 7000;
 
 let x, y;
 let jitter = 50;
-let jitterDampingFactor = 1000;
+let jitterDampingFactor = 500;
 
 function setup() {
   createCanvas(500, 800);
@@ -83,4 +83,3 @@ function getAngleShift(direction) {
     direction * angleIncrement * Math.pow(exponentialBaseAngle, count);
   return angleShift / angleDampingFactor;
 }
-

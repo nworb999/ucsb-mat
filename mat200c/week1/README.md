@@ -10,10 +10,12 @@ https://editor.p5js.org/nworb999/sketches/lkbu51XGh
 
 https://editor.p5js.org/nworb999/sketches/CFilQmvKl
 
-<img width="401" alt="Screen Shot 2023-10-02 at 2 08 13 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/21c47c8b-af40-4557-ace1-7c966a387217">
+<img width="400" alt="Screen Shot 2023-10-02 at 11 40 10 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/da73bf73-041f-4c80-b273-4de6255e9551">
 
-<img width="403" alt="Screen Shot 2023-10-02 at 2 09 05 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/1ffbbf59-5710-4777-a116-61249947bcff">
+<img width="401" alt="Screen Shot 2023-10-04 at 11 48 20 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/ee2b9cc4-1a18-4bfd-8a6f-12e014724201">
 
-<img width="398" alt="Screen Shot 2023-10-02 at 2 09 55 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/6c103238-b9a6-4ed0-a4e2-723f64d4512a">
+<img width="400" alt="Screen Shot 2023-10-02 at 11 40 55 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/9105be07-29ee-4823-9e93-5fc4b3971f1d">
 
-<img width="398" alt="Screen Shot 2023-10-02 at 2 11 26 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/a981fe48-23c7-45e8-8254-2568e9c8580f">
+<img width="392" alt="Screen Shot 2023-10-02 at 11 41 37 PM" src="https://github.com/nworb999/ucsb-mat/assets/20407156/101c0666-00e6-4458-b7e6-e9dcafee5044">
+
+

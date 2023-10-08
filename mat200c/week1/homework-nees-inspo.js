@@ -5,9 +5,9 @@
 // I used a markov chain because I had been researching it for another
 // project and I wanted more symmetry in the results.  
 
-// The boilerplate for markov chain from chatGPT. 
+// The boilerplate for markov chain is from chatGPT. 
 
-let maxRadius = 200;
+let maxRadius = 100;
 let radiusShift = 10;
 let skewShift = 33 + (1 / 3);
 
