@@ -1,37 +1,18 @@
+// https://editor.p5js.org/nworb999/sketches/WRiu2f4ED
+
 // Karl Yerkes
 // 2023-10-04
 //
 // Starter code for CPU/js implementation of Mandlebrot Set
 //
 
+// Emma Brown 
+
 function handle_pixel(c, r, C, R) {
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // PUT YOUR CODE HERE. MANDLEBROT SET, GO.
-  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  // algorithm:
-  // for this pixel...
-  // assign an x and y value (decide boundaries)
-  // create c0, a complex number
-  // start z at 0 or c0
-  // iterate z = z² + c0 some number of times
-  // count the iterations
-  // test for convergence/divergence, stopping early
-  // color the pixel according to the speed of divergence
-  // ... use the number of iterations for this!
 
-  // math.js is a library. look at this:
-  //   https://mathjs.org/docs
-  // try these:
-  //   math.complex(1, 3);
-  //   math.add(e, f)
-  //   math.multiply(g, h)
-  //   math.abs(z);
-  //   math.angle(z)
-  // you don't have to use this library
-  // you can work with x (real) and y (imaginary) directly
-
-  let x = (c-C/2) * 0.01 - 0.7;
-  let y = (r-R/2) * 0.01;
+  let x = c * 3.0/C - 2.1; 
+  // chatGPT zoomed this in for me 
+  let y = r * 3.0/R - 1.5; 
 
   let c0 = math.complex(x, y); // 1 + 3i
 
@@ -58,7 +39,7 @@ function handle_pixel(c, r, C, R) {
 }
 
 function setup() {
-  createCanvas(200, 200);
+  createCanvas(600, 600);
 }
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
