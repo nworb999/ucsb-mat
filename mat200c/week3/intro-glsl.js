@@ -3,7 +3,7 @@ let zoom, x, y;
 
 function setup() {
   // make a canvas centered on (0, 0) !
-  createCanvas(400, 400, WEBGL);
+  createCanvas(600, 600, WEBGL);
   mandelbrot = createShader(verteX, fragment);
 }
 
@@ -20,7 +20,7 @@ function draw() {
   // shader executes per pixel drawn. (so the shader does
   // not execute on the wedge at the top.)
   //
-  quad(-1, -1, 1, -1, 1, 0.8, -1, 1);
+  quad(-1, -1, 1, -1, 1, 1, -1, 1);
 }
 
 // remember mouse movements
@@ -53,36 +53,31 @@ void main() {
 const fragment = `
 precision highp float;
 varying vec2 vPosition;
+uniform vec2 mouse; // a variable passed in from javascript/p5
 
-float iterations = 0.0;
 float maximum = 16.0;
 const float limit = 100.0;
 
-uniform vec2 mouse; // a variable passed in from javascript/p5
-
-vec2 complex_multiply(vec2 z0, vec2 z1) {
-    return vec2(
-    z0.x * z1.x + z0.y * z1.y, 
-    z0.y * z1.x + z0.x * z1.y);
-}
 
 void main() {
-  // x is on (-1, 1) and y is on (-1, 1)
-  vec2 c0 = vec2(2.0, 3.0);
-  vec2 z = c0;
+  vec2 c = vPosition;
+  vec2 z = vec2(0.0, 0.0);
+  vec3 color = vec3(0.0, 0.0, 0.0);
 
   for (float i = 0.0; i < limit; i++) {
-    z = complex_multiply(z, z) + c0;
-    if (length(z) > maximum) {
-      vec3 color = vec3(0, 0, 1.0 * (iterations/limit));
+    float x = (z.x * z.x - z.y * z.y) + c.x;
+    float y = (z.y * z.x + z.x * z.y) + c.y;
+
+    if ((x * x + y * y) > maximum) {
+      color = vec3(i/maximum, sqrt(i/maximum), sin(i));
+      break;
     }
-    iterations++;
+    z.x = x;
+    z.y = y;
   }
 
-  vec3 color = vec3(0, 0, 1.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
 `;
-
 
