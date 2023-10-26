@@ -17,7 +17,6 @@ int staggerTime = 2000;
 
 int channel0 = 0;
 int channel1 = 1;
-int channel2 = 2;
 
 float [][] transitionMatrix = {
   {0.5, 0.0, 0.2, 0.1, 0.1, 0.1, 0.0},
@@ -51,8 +50,15 @@ void draw() {
   int feedbackMidiValue = generateSineMIDIValue();
   delay(staggerTime);
   int timeMidiValue = generateSineMIDIValue();
-  myBus.sendControllerChange(channel1, 10, feedbackMidiValue);
-  myBus.sendControllerChange(channel1, 11, timeMidiValue);
+  
+  int rateMidiValue = generateTanMIDIValue();
+  delay(staggerTime);
+  int resonanceMidiValue = generateTanMIDIValue();
+  
+  myBus.sendControllerChange(channel1, 10, timeMidiValue);
+  myBus.sendControllerChange(channel1, 11, feedbackMidiValue);
+  myBus.sendControllerChange(channel1, 12, rateMidiValue);
+  myBus.sendControllerChange(channel1, 13, resonanceMidiValue);
 }
 
 void playMelody()
@@ -106,6 +112,12 @@ int generateSineMIDIValue() {
   float sineValue = sin(phase) * 0.5 + 0.5;
   phase += frequency;
   return int(sineValue * 127);
+}
+
+int generateTanMIDIValue() {
+  float tanValue = tan(phase) * 0.5 + 0.5;
+  phase += frequency;
+  return int(tanValue * 127);
 }
 
 void delay(int time) {
