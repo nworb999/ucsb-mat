@@ -36,7 +36,7 @@ void setup() {
   background(0);
   minim = new Minim(this);
   out = minim.getLineOut();
-  myBus = new MidiBus(this, -1, "to Max 1");
+  myBus = new MidiBus(this, -1, "Teensy MIDI/Audio");
 
   cp5 = new ControlP5(this);
   cp5.addSlider("frequency").setPosition(50, 50).setRange(0.001, 0.1).setValue(frequency);
@@ -50,7 +50,7 @@ void draw() {
   int feedbackMidiValue = generateSineMIDIValue();
   delay(staggerTime);
   int timeMidiValue = generateSineMIDIValue();
-  
+  delay(staggerTime);
   int rateMidiValue = generateTanMIDIValue();
   delay(staggerTime);
   int resonanceMidiValue = generateTanMIDIValue();
