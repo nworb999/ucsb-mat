@@ -65,7 +65,7 @@ void playMelody()
 {
   int note = melody[melodyIndex];
   int velocity = int(randomGaussian() * 4 + 124);
-  duration = int(randomGaussian() * 100 + 200);
+  duration = int(randomGaussian() * 100 + 500);
 
   myBus.sendNoteOn(channel0, note, velocity);
   delay(duration);
@@ -85,7 +85,7 @@ int [] generateChord(int note)
 {
   int[] scaleIntervals = {2, 3, 5, 7, 9};
 
-  int chordLength = constrain(int(randomGaussian() * 1.5 + 3.5), 1, 5);
+  int chordLength = constrain(int(randomGaussian() * 35 + 15), 50, 100);
   int[] chordNotes = new int[chordLength];
 
   for (int i = 1; i < chordLength; i++) {

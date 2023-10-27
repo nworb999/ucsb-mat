@@ -18,8 +18,8 @@ AudioConnection patchCord1(sine_fm1, freeverb1);
 AudioConnection patchCord3(freeverb1, 0, mixer1, 1);
 AudioConnection patchCord4(sine_fm1, 0, mixer1, 0);
 AudioConnection patchCord5(mixer1, delay1);
-AudioConnection patchCord6(delay1, 0, i2s1, 1);
-AudioConnection patchCord7(delay1, 0, i2s1, 0);
+AudioConnection patchCord6(delay1, 0, i2s1, 0);
+AudioConnection patchCord7(delay1, 1, i2s1, 1);
 AudioConnection patchCord8(waveform1, 0, sine_fm1, 1);
 
 #define LED_PIN 13
@@ -27,7 +27,9 @@ AudioConnection patchCord8(waveform1, 0, sine_fm1, 1);
 
 void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
   digitalWrite(LED_PIN, 0);
-  sine_fm1.amplitude(inVelocity / 127.0);
+  float frequency = midiToFreq(inNote);
+  sine_fm1.frequency(frequency);
+  sine_fm1.amplitude(inVelocity/127.0);
 }
 
 void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
@@ -35,16 +37,11 @@ void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
   sine_fm1.amplitude(0);
 }
 
-void handlePitchChange(byte channel, int pitch) {
-  float frequency = midiToFreq(pitch);
-  sine_fm1.frequency(frequency);
-}
-
 void controlChange(byte channel, byte control, byte value) {
   if (channel == 1) {
     switch (control) {
       case 10:
-        delay1.delay(0, value * 2);
+        delay1.delay(0, 330);
         break;
       case 11:
         waveform1.pulseWidth(value / 127.0);
@@ -53,7 +50,7 @@ void controlChange(byte channel, byte control, byte value) {
         waveform1.amplitude(value / 127.0);
         break;
       case 13:
-        freeverb1.damping(value / 127.0);
+        delay1.delay(1, 330);
         break;
       case 66:
         analogWrite(LED_PIN, value / 2);
@@ -68,8 +65,8 @@ float midiToFreq(int midiNote) {
   return pow(2.0, (midiNote - 69) / 12.0) * 440.0;
 }
 
-float volume = 0.5;
-int waveform_type = WAVEFORM_SAWTOOTH;
+float volume = 0.01;
+int waveform_type = WAVEFORM_SINE;
 int mixer1_setting = 0;
 elapsedMillis timeout = 0;
 
@@ -93,13 +90,13 @@ void setup() {
   sine_fm1.frequency(100);
   sine_fm1.amplitude(10);
 
-  delay1.delay(0, 400);
+  delay1.delay(0, 110);
+  delay1.delay(1, 150);
   freeverb1.roomsize(0.5);
 
   pinMode(LED_PIN, OUTPUT);
   usbMIDI.setHandleNoteOff(handleNoteOff);
   usbMIDI.setHandleNoteOn(handleNoteOn);
-  usbMIDI.setHandlePitchChange(handlePitchChange);
   usbMIDI.setHandleControlChange(controlChange);
 
   digitalWrite(LED_BUILTIN, HIGH);
