@@ -29,34 +29,46 @@ float midiToFreq(int midiNote) {
   return pow(2.0, (midiNote - 69) / 12.0) * 440.0;
 }
 
+
+float dbtoa(float db) {
+  return pow(10.0, db / 20.0);
+}
+
 void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
-  digitalWrite(LED_PIN, 0);
+  digitalWrite(LED_PIN, HIGH);
   float frequency = midiToFreq(inNote);
-  sine_fm1.frequency(frequency);
-  sine_fm1.amplitude(inVelocity / 127.0);  // velocity * 0.5 / 127.0
+  VCO.frequency(frequency);
+  VCO.amplitude(inVelocity / 127.0);  // velocity * 0.5 / 127.0
 }
 
 void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
-  digitalWrite(LED_PIN, 1);
+  digitalWrite(LED_PIN, LOW);
+  VCO.amplitude(50);
 }
 
 void controlChange(byte channel, byte control, byte value) {
   if (channel == 1) {
     switch (control) {
-      case 10:
-        delay1.delay(0, value * 2.0);
+      case 1:  // INT. knob
+        LFO.amplitude(value / 127.0);
         break;
-      case 11:
-        waveform1.pulseWidth(value / 127.0);
+      case 2:  // RATE knob
+        LFO.frequency(midiToFreq(value));
         break;
-      case 12:
-        sine_fm1.amplitude(value / 127.0);  // add dbtoa(-value/3.0);
+      case 3:  // CUTOFF knob
+        VCF.frequency(midiToFreq(value));
         break;
-      case 13:
+      case 4:  // RESONANCE knob
+        VCF.resonance(midiToFreq(value));
+        break;
+      case 5:  // DELAY time
         delay1.delay(1, value * 1.5);
         break;
-      case 66:
-        analogWrite(LED_PIN, value / 2);
+      case 6:  // DELAY feedback
+               // can i create it?
+        break;
+      case 7:  // GAIN
+        volume.gain(map(value, 0, 127, 0, 2));
         break;
       default:
         break;
@@ -64,8 +76,10 @@ void controlChange(byte channel, byte control, byte value) {
   }
 }
 
-float volume = 0.01;
+float startVolume = 0.01;
 int default_waveform = WAVEFORM_SINE;
+
+
 
 void setup() {
   Serial.begin(9600);
@@ -73,7 +87,8 @@ void setup() {
 
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.8);
-  volume.gain(volume);
+
+  volume.gain(startVolume);
   pinMode(LED_PIN, OUTPUT);
 
   usbMIDI.begin();
@@ -86,6 +101,10 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
   delay(400);
   digitalWrite(LED_BUILTIN, LOW);
+
+  VCO.begin(default_waveform);
+  VCO.frequency(100);
+  VCO.amplitude(10);
 }
 
 void loop() {
