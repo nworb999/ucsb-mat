@@ -29,7 +29,6 @@ float midiToFreq(int midiNote) {
   return pow(2.0, (midiNote - 69) / 12.0) * 440.0;
 }
 
-
 float dbtoa(float db) {
   return pow(10.0, db / 20.0);
 }
@@ -38,7 +37,7 @@ void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
   digitalWrite(LED_PIN, HIGH);
   float frequency = midiToFreq(inNote);
   VCO.frequency(frequency);
-  VCO.amplitude(inVelocity / 127.0);  // velocity * 0.5 / 127.0
+  VCO.amplitude(inVelocity / 127.0);
 }
 
 void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
@@ -50,7 +49,7 @@ void controlChange(byte channel, byte control, byte value) {
   if (channel == 1) {
     switch (control) {
       case 1:  // INT. knob
-        LFO.amplitude(value / 127.0);
+        LFO.amplitude(dbtoa(map(value & 127, 0, 127, -55, 0)));
         break;
       case 2:  // RATE knob
         LFO.frequency(midiToFreq(value));
@@ -89,6 +88,11 @@ void setup() {
   sgtl5000_1.volume(0.8);
 
   volume.gain(startVolume);
+
+  VCO.begin(default_waveform);
+  VCO.frequency(100);
+  VCO.amplitude(10);
+
   pinMode(LED_PIN, OUTPUT);
 
   usbMIDI.begin();
@@ -101,10 +105,6 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
   delay(400);
   digitalWrite(LED_BUILTIN, LOW);
-
-  VCO.begin(default_waveform);
-  VCO.frequency(100);
-  VCO.amplitude(10);
 }
 
 void loop() {

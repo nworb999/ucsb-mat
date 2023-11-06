@@ -60,8 +60,8 @@ void draw() {
   myBus.sendControllerChange(channel1, 3, rateMidiValue);
   myBus.sendControllerChange(channel1, 4, resonanceMidiValue);
   myBus.sendControllerChange(channel1, 5, timeMidiValue);
-  myBus.sendControllerChange(channel1, 6, feedbackMidiValue);
-  myBus.sendControllerChange(channel1, 7, rateMidiValue);
+  myBus.sendControllerChange(channel1, 6, 100);
+  myBus.sendControllerChange(channel1, 7, 100);
 }
 
 void playMelody()
