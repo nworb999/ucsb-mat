@@ -1,5 +1,3 @@
-// https://editor.p5js.org/nworb999/sketches/Y2Ohkwbk3
-
 const Temperament = {
   INTROVERT: "introvert",
   EXTROVERT: "extrovert",
@@ -7,22 +5,16 @@ const Temperament = {
 
 class Character {
   constructor(temperament, confidence, energyLevel, color) {
-    if (!Object.values(Temperament).includes(temperament)) {
-      throw new Error("Invalid temperament value");
-    }
     this.position = createVector(random(width), random(height));
     this.velocity = createVector(random(-1, 1), random(-1, 1));
     this.temperament = temperament;
-    this.confidence = confidence; // 1-5
+    this.confidence = confidence; // Initially set to 1-5
     this.energyLevel = energyLevel; // 1-10
     this.color = color;
     this.crush = null;
-    this.x = random(width);
-    this.y = random(height);
   }
 
   applyForce(force) {
-    // Newton's second law: F = m * a
     let acceleration = p5.Vector.div(force, this.confidence);
     this.velocity.add(acceleration);
   }
@@ -30,143 +22,118 @@ class Character {
   display() {
     push();
     translate(this.position.x, this.position.y);
+    let offset = this.temperament === Temperament.INTROVERT ? -6 : 6;
 
+    // Draw attraction line to the crush with transparency
     if (this.crush) {
-      stroke(this.crush.color);
+      stroke(this.getColor(), 75);
       strokeWeight(2);
-      line(0, 0, this.crush.position.x - this.position.x, this.crush.position.y - this.position.y);
+      line(offset, 0, this.crush.position.x - this.position.x + offset, this.crush.position.y - this.position.y);
     }
 
-    noStroke();
     fill(this.getColor());
-
-    if (this.temperament === "introvert") {
-      ellipse(0, 0, this.confidence, this.confidence);
-    } else if (this.temperament === "extrovert") {
+    noStroke();
+    if (this.temperament === Temperament.INTROVERT) {
+      ellipse(0, 0, this.confidence * 2); // Using diameter for ellipse size
+    } else {
       rectMode(CENTER);
-      square(0, 0, this.confidence);
+      square(0, 0, this.confidence * 2); // Using side length for square
     }
-
     pop();
   }
 
-   constrainToCanvas() {
-    // Check the left and right boundaries
-    if (this.position.x < 0) {
-      this.position.x = 0;
-      this.velocity.x *= -1; // Invert velocity to "bounce" from the edge
-    } else if (this.position.x > width) {
-      this.position.x = width;
+  constrainToCanvas() {
+    if (this.position.x < 0 || this.position.x > width) {
+      this.position.x = constrain(this.position.x, 0, width);
       this.velocity.x *= -1;
     }
 
-    // Check the top and bottom boundaries
-    if (this.position.y < 0) {
-      this.position.y = 0;
-      this.velocity.y *= -1;
-    } else if (this.position.y > height) {
-      this.position.y = height;
+    if (this.position.y < 0 || this.position.y > height) {
+      this.position.y = constrain(this.position.y, 0, height);
       this.velocity.y *= -1;
     }
   }
-  
+
   update() {
-    if (this.crush && this.confidence < this.crush.confidence) {
-      let force = p5.Vector.sub(this.crush.position, this.position);
-      let distanceSq = force.magSq();
+    if (this.crush) {
+      let attractionForce = p5.Vector.sub(this.crush.position, this.position);
+      let distanceSq = attractionForce.magSq();
       let strength = (G * this.crush.confidence) / distanceSq;
-      
       strength *= crushAttractionMultiplier;
-      
-      force.setMag(strength); // Calculate the gravitational force
-      this.applyForce(force);
+      attractionForce.setMag(strength);
+      this.applyForce(attractionForce);
+      this.velocity.mult(softeningFactor);
     }
-    
+
     this.position.add(this.velocity);
     this.constrainToCanvas();
   }
 
   interact(other) {
-    let buffer = this.confidence / 2 + other.confidence / 2; // so they don't overlap (thanks chatGPT)
-    let dx = other.x - this.x;
-    let dy = other.y - this.y;
-    let distance = sqrt(dx * dx + dy * dy);
-
-    if (distance < buffer) {
-      // Perform a speech check (coin flip)
-      let coinFlip = random() < 0.5;
-      let repelForce = coinFlip ? 5 : 2; // Heads: strong repulsion, Tails: weak repulsion
-
-      // Apply the spring force
-      let springForceX = (dx / distance) * repelForce;
-      let springForceY = (dy / distance) * repelForce;
-
-      // Repel this character
-      this.x -= springForceX;
-      this.y -= springForceY;
-
-      // Repel the other character (to conserve momentum)
-      other.x += springForceX;
-      other.y += springForceY;
+    let distance = p5.Vector.dist(this.position, other.position);
+    if (distance < this.confidence + other.confidence) {
+      this.doInteraction(other);
     }
+  }
+
+  doInteraction(other) {
+    let diceRoll = ceil(random(10)); // Rolling a 10-sided dice
+    let successThreshold = 6; // A roll of 6 or higher is a success
+    let interactionOutcome = diceRoll >= successThreshold ? diceRoll - 5 : diceRoll - 6;
+    
+    // Adjust confidence based on the outcome of the interaction
+    this.adjustConfidence(interactionOutcome);
+    other.adjustConfidence(interactionOutcome);
+
+    let forceMagnitude = map(abs(interactionOutcome), 0, 4, 2, 5);
+    let repelForce = p5.Vector.sub(this.position, other.position);
+    repelForce.setMag(forceMagnitude);
+
+    this.applyForce(repelForce);
+    repelForce.mult(-1); // Apply an equal and opposite force to the other character
+    other.applyForce(repelForce);
+  }
+
+  adjustConfidence(change) {
+    // Adjust the confidence proportionally to the interaction outcome
+    this.confidence += change;
+    this.confidence = constrain(this.confidence, 1, 10); // Ensure confidence stays within bounds
   }
 
   getColor() {
     let intensity = map(this.energyLevel, 1, 10, 50, 255);
-    return lerpColor(color(255), this.color, intensity / 255); // thanks chatGPT
+    return lerpColor(color(255), this.color, intensity / 255);
   }
 }
 
 let characters = [];
-const crushAttractionMultiplier = 5; 
-const G = 90;
+const crushAttractionMultiplier = 10;
+const softeningFactor = 0.8;
+const G = 150;
 
 function setup() {
-  createCanvas(600, 600);
-  characters.push(
-    new Character(
-      Temperament.INTROVERT,
-      30,
-      5,
-      color(random(255), random(255), random(255))
-    )
-  );
-  characters.push(
-    new Character(
-      Temperament.EXTROVERT,
-      20,
-      7,
-      color(random(255), random(255), random(255))
-    )
-  );
-  characters.push(
-    new Character(
-      Temperament.INTROVERT,
-      40,
-      6,
-      color(random(255), random(255), random(255))
-    )
-  );
-  characters.push(
-    new Character(
-      Temperament.EXTROVERT,
-      50,
-      4,
-      color(random(255), random(255), random(255))
-    )
-  );
-
-  for (let char of characters) {
-    let possibleCrushes = characters.filter((c) => c !== char); // Can't have a crush on themselves
-    char.crush = random(possibleCrushes);
-
-    let r = p5.Vector.sub(char.position, char.crush.position);
-    let distance = r.mag();
-    let orbitalVelocity = sqrt((G * char.crush.confidence) / distance); // Circular orbit speed
-    r.rotate(HALF_PI); // Rotate vector by 90 degrees to make it tangential
-    r.setMag(orbitalVelocity);
-    char.velocity = r;
+  createCanvas(800, 800);
+  for (let i = 0; i < 4; i++) {
+    let temperament = i % 2 === 0 ? Temperament.INTROVERT : Temperament.EXTROVERT;
+    characters.push(
+      new Character(
+        temperament,
+        random(5, 30),
+        random(1, 10),
+        color(random(255), random(255), random(255))
+      )
+    );
   }
+
+  characters.forEach(char => {
+    let possibleCrushes = characters.filter(c => c !== char);
+    char.crush = random(possibleCrushes);
+    let r = p5.Vector.sub(char.crush.position, char.position);
+    let distance = r.mag();
+    let orbitalVelocity = sqrt((G * char.crush.confidence) / distance);
+    r.rotate(HALF_PI).setMag(orbitalVelocity);
+    char.velocity = r;
+  });
 }
 
 function draw() {
@@ -176,11 +143,8 @@ function draw() {
     for (let j = i + 1; j < characters.length; j++) {
       characters[i].interact(characters[j]);
     }
-  }
-
-  for (let char of characters) {
-    char.update();
-    char.display();
+    characters[i].update();
+    characters[i].display();
   }
 }
 
