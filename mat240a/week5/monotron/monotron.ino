@@ -12,7 +12,7 @@ AudioEffectDelay delay1;          //xy=463,366
 AudioFilterLadder VCF;            //xy=571,139
 AudioAmplifier volume;            //xy=728,141
 AudioOutputI2S output;            //xy=896,157
-AudioConnection patchCord1(LFO, 0, VCO, 0);
+//AudioConnection patchCord1(LFO, 0, VCO, 0);
 AudioConnection patchCord2(VCO, 0, feedback, 0);
 AudioConnection patchCord3(feedback, 0, VCF, 0);
 AudioConnection patchCord4(delay1, 0, feedback, 1);
@@ -42,41 +42,41 @@ void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
 
 void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
   digitalWrite(LED_PIN, LOW);
-  VCO.amplitude(50);
+  VCO.amplitude(0);
 }
 
 void controlChange(byte channel, byte control, byte value) {
-  if (channel == 1) {
-    switch (control) {
-      case 1:  // INT. knob
-        LFO.amplitude(dbtoa(map(value & 127, 0, 127, -55, 0)));
-        break;
-      case 2:  // RATE knob
-        LFO.frequency(midiToFreq(value));
-        break;
-      case 3:  // CUTOFF knob
-        VCF.frequency(midiToFreq(value));
-        break;
-      case 4:  // RESONANCE knob
-        VCF.resonance(midiToFreq(value));
-        break;
-      case 5:  // DELAY time
-        delay1.delay(1, value * 1.5);
-        break;
-      case 6:  // DELAY feedback
-               // can i create it?
-        break;
-      case 7:  // GAIN
-        volume.gain(map(value, 0, 127, 0, 2));
-        break;
-      default:
-        break;
-    }
+  // if (channel == 1) {
+  switch (control) {
+    case 1:  // INT. knob
+      LFO.amplitude(dbtoa(map(value & 127, 0, 127, -55, 0)));
+      break;
+    case 2:  // RATE knob
+      LFO.frequency(midiToFreq(value));
+      break;
+    case 3:  // CUTOFF knob
+      VCF.frequency(midiToFreq(value));
+      break;
+    case 4:  // RESONANCE knob
+      VCF.resonance(midiToFreq(value));
+      break;
+    case 5:  // DELAY time
+      delay1.delay(0, value * 1.5);
+      break;
+    case 6:  // DELAY feedback
+      feedback.gain(1, map(value , 0, 127, 0, 2));
+      break;
+    case 7:  // GAIN
+      volume.gain(map(value, 0, 127, 0, 2));
+      break;
+    default:
+      break;
   }
+  // }
 }
 
 float startVolume = 0.01;
-int default_waveform = WAVEFORM_SINE;
+int default_waveform = WAVEFORM_SAWTOOTH;
 
 
 
@@ -91,7 +91,11 @@ void setup() {
 
   VCO.begin(default_waveform);
   VCO.frequency(100);
-  VCO.amplitude(10);
+  VCO.amplitude(0);
+
+  VCF.frequency(20000);
+  VCF.resonance(0.1);
+
 
   pinMode(LED_PIN, OUTPUT);
 

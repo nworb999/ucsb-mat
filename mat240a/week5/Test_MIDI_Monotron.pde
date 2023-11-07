@@ -8,11 +8,13 @@ Minim minim;
 AudioOutput out;
 MidiBus myBus;
 
-int[] melody = {60, 62, 65, 67, 69, 72, 74};
+int[] scale = {60, 62, 65, 67, 69, 72, 74};
+int[] currentMelody;
+int noteIndex = 0;
 int melodyIndex = 0;
 
 int lastPlayTime = 0;
-int duration = 0;
+int duration = 500;
 int staggerTime = 2000;
 
 int channel0 = 0;
@@ -37,16 +39,42 @@ void setup() {
   minim = new Minim(this);
   out = minim.getLineOut();
   myBus = new MidiBus(this, -1, "Teensy MIDI/Audio");
+  myBus.list();
 
   cp5 = new ControlP5(this);
   cp5.addSlider("frequency").setPosition(50, 50).setRange(0.001, 0.1).setValue(frequency);
 }
+int fc = 0;
+boolean onIndicator = false;
 
 void draw() {
   if (millis() - lastPlayTime >= duration) {
-    playMelody();
+    onIndicator = !onIndicator;
+    
+    if (onIndicator) {
+      // note on
+      currentMelody = createMelody();
+      noteIndex = 0;
+    }
+    
+    if (noteIndex < currentMelody.length) {
+      int noteToPlay = currentMelody[noteIndex];
+     if (onIndicator) {
+      // note on
+      //myBus.sendNoteOn(channel0, frameCount % 30 + 20, 100);
+        int velocity = int(randomGaussian() * 4 + 124);
+      myBus.sendNoteOn(channel0,noteToPlay, velocity);
+    }
+    else {
+      // note off
+      //println(frameCount + " note off");
+      myBus.sendNoteOff(channel0, noteToPlay, 0);
+    }}
+
+    fc++;
     lastPlayTime = millis();
   }
+
   int feedbackMidiValue = generateSineMIDIValue();
   delay(staggerTime);
   int timeMidiValue = generateSineMIDIValue();
@@ -57,31 +85,19 @@ void draw() {
 
   myBus.sendControllerChange(channel1, 1, timeMidiValue);
   myBus.sendControllerChange(channel1, 2, feedbackMidiValue);
-  myBus.sendControllerChange(channel1, 3, rateMidiValue);
+  myBus.sendControllerChange(channel1, 3, fc++);
   myBus.sendControllerChange(channel1, 4, resonanceMidiValue);
-  myBus.sendControllerChange(channel1, 5, timeMidiValue);
+  myBus.sendControllerChange(channel1, 5, 127);
   myBus.sendControllerChange(channel1, 6, feedbackMidiValue);
   myBus.sendControllerChange(channel1, 7, rateMidiValue);
 }
 
-void playMelody()
+int[] createMelody()
 {
-  int note = melody[melodyIndex];
-  int velocity = int(randomGaussian() * 4 + 124);
-  duration = int(randomGaussian() * 100 + 500);
-
-  myBus.sendNoteOn(channel0, note, velocity);
-  delay(duration);
-  myBus.sendNoteOff(channel0, note, velocity);
-
-  int[] chord = generateChord(note);
-  for (int i = 0; i < chord.length; i++) {
-    myBus.sendNoteOn(channel0, chord[i], velocity);
-    delay(duration);
-    myBus.sendNoteOff(channel0, chord[i], velocity);
-  }
-
+  int note = scale[melodyIndex];
   melodyIndex = getNextMelodyIndex(melodyIndex);
+
+  return generateChord(note);
 }
 
 int [] generateChord(int note)
@@ -101,14 +117,14 @@ int [] generateChord(int note)
 
 int getNextMelodyIndex(int currentIndex) {
   float randomNum = random(1);
-  for (int i = 0; i < melody.length; i++) {
+  for (int i = 0; i < scale.length; i++) {
     if (randomNum <= transitionMatrix[currentIndex][i]) {
       return i;
     } else {
       randomNum -= transitionMatrix[currentIndex][i];
     }
   }
-  return int(random(melody.length));
+  return int(random(scale.length));
 }
 
 int generateSineMIDIValue() {
