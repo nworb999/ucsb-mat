@@ -77,7 +77,7 @@
         "doubleTap": false,
         "range": {
           "min": 0,
-          "max": 10
+          "max": 1
         },
         "logScale": false,
         "sensitivity": 1,
