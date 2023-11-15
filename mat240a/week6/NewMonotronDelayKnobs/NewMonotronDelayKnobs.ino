@@ -65,6 +65,7 @@ public:
   }
 };
 
+AudioEffectOnePole poleFilter;
 
 float mtof(float midi) {
   return 440.0 * pow(2.0, (midi - 69.0) / 12.0);
@@ -74,53 +75,45 @@ float dbtoa(float db) {
   return pow(10.0, db / 20.0);
 }
 
-void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
+const byte cMinorScale[] = { 60, 62, 63, 65, 67, 68, 70 };  // C, D, Eb, F, G, Ab, Bb
+
+byte generateRandomNote() {
+  byte scaleSize = sizeof(cMinorScale) / sizeof(cMinorScale[0]);
+  byte randomIndex = random(0, scaleSize);  // Pick a random index
+  return cMinorScale[randomIndex];          // Return the note at the index
+}
+
+float generateRandomFrequency() {
+  // Define the frequency range (for example, 100 Hz to 3000 Hz)
+  float minFrequency = 100.0;
+  float maxFrequency = 3000.0;
+
+  return random(minFrequency, maxFrequency);
+}
+
+void noteOn() {
   digitalWrite(13, HIGH);
 
-  // add note on code here
+  byte melodyNote = generateRandomNote();
+
+  float frequency = mtof(melodyNote);
+  poleFilter.frequency(frequency);
+
+  VCO.frequency(frequency);
+  VCO.amplitude(1.0);
 }
 
-void handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
+void noteOff() {
   digitalWrite(13, LOW);
 
-  // add note off code here
+  VCO.frequency(0);
+  VCO.amplitude(0);
+  poleFilter.frequency(0);
 }
 
-void controlChange(byte channel, byte control, byte value) {
-  switch (control) {
-
-    case 1:  // INT. knob
-      LFO.amplitude(dbtoa(map(value & 127, 0, 127, -55, 0)));
-      break;
-    case 2:  // RATE knob
-      LFO.frequency(mtof(value));
-      break;
-    case 3:  // CUTOFF knob
-      VCF.frequency(mtof(value));
-      break;
-    case 4:  // RESONANCE knob
-      VCF.resonance(mtof(value));
-      break;
-    case 5:  // DELAY time
-      delay1.delay(0, value * 1.5);
-      break;
-    case 6:  // DELAY feedback
-      feedback.gain(1, map(value , 0, 127, 0, 2));
-      break;
-    case 7:  // GAIN
-      volume.gain(map(value, 0, 127, 0, 2));
-      break;
-    default:
-      break;
-  }
-}
-
-float startVolume = 0.01;
+float startVolume = 0.4;
 
 void setup() {
-  usbMIDI.setHandleNoteOff(handleNoteOff);
-  usbMIDI.setHandleNoteOn(handleNoteOn);
-  usbMIDI.setHandleControlChange(controlChange);
   Serial.begin(9600);
 
   AudioMemory(200);
@@ -137,60 +130,71 @@ void setup() {
   // it receives that message. In this way, a physical UI is imitated.
   //
   VCO.begin(WAVEFORM_SAWTOOTH);
-  VCO.frequency(100);
+  VCO.frequency(0);
   VCO.amplitude(0);
-  volume.gain(startVolume);       // VOLUME knob; add this knob/CC
-  VCF.frequency(15000);   // CUTOFF knob; add this knob/CC
-  VCF.resonance(0.1);       // add a knob/CC for this; Monotron Delay does not have this
-  feedback.gain(0, 1.0);  // pass VCO signal
-  feedback.gain(3, 0.0);  // FEEDBACK knob; add this knob/CC
-  VCO.begin(1.0, 440.0, WAVEFORM_BANDLIMIT_SAWTOOTH);
+  poleFilter.frequency(0);
+
+  volume.gain(startVolume);                       // VOLUME knob; add this knob/CC
+  VCF.frequency(15000);                           // CUTOFF knob; add this knob/CC
+  VCF.resonance(0.5);                             // add a knob/CC for this; Monotron Delay does not have this
+  feedback.gain(0, 1.0);                          // pass VCO signal
+  feedback.gain(3, 0.0);                          // FEEDBACK knob; add this knob/CC
   LFO.begin(0.5, 1.0, WAVEFORM_BANDLIMIT_PULSE);  // also WAVEFORM_TRIANGLE
   LFO.pulseWidth(0.5);                            // add a knob//CC for this; Monotron Delay does not have this
   mixer2.gain(0, 0.0);
   mixer2.gain(1, 1.0);
   VCO.frequencyModulation(2.0);
 
-  // MIDI testing setup
-  usbMIDI.begin();
-
-  usbMIDI.setHandleNoteOff(handleNoteOff);
-  usbMIDI.setHandleNoteOn(handleNoteOn);
-  usbMIDI.setHandleControlChange(controlChange);
-
   // Blink LED once at startup
   digitalWrite(LED_BUILTIN, HIGH);
   delay(400);
   digitalWrite(LED_BUILTIN, LOW);
+
+  randomSeed(analogRead(0));
 }
 
 inline float kymap(float value, float low, float high, float Low, float High) {
   return Low + (High - Low) * ((value - low) / (high - low));
 }
 
-void loop() {
-  while (usbMIDI.read())
-  
-  volume.gain(dbtoa(map(analogRead(A10) & 127, 0, 127, -55, 0)));
-  VCF.frequency(mtof(map(analogRead(A14), 0, 1023, 0.0, 127.0)));
-  VCF.resonance(0.1);    
-  LFO.amplitude(dbtoa(map(analogRead(A17), 0, 1023, -65.0, 0.0 + dbtoa(-65.0)) - dbtoa(-65.0)));
-  feedback.gain(3,mtof(map(analogRead(A15), 0, 1023, 0.0, 127.0)));
-  //offset.amplitude(map(analogRead(A16), 0, 1023, -1.0, 1.0));
-  LFO.offset(map(analogRead(A16), 0, 1023, -0.5, 0.5));
+  unsigned long lastNoteOnTime = 0;
+  unsigned long lastNoteOffTime = 0;
+  const unsigned long noteInterval = 1000;
+  const unsigned long noteDuration = 500;
+  bool noteIsOn = false;
 
-  //VCO.frequency(mtof(map(analogRead(A10), 0, 1023, 0.0, 127.0)));
+void loop() {
+  unsigned long currentTime = millis();
+  if (!noteIsOn && currentTime - lastNoteOnTime > noteInterval) {
+    // Time to start a new note
+    noteOn();
+    noteIsOn = true;
+    lastNoteOnTime = currentTime;
+    lastNoteOffTime = currentTime;  // Reset the noteOff timer
+  } else if (noteIsOn && currentTime - lastNoteOffTime > noteDuration) {
+    // Duration elapsed, turn the note off
+    noteOff();
+    noteIsOn = false;
+  }
+
+  volume.gain(dbtoa(kymap(analogRead(A17), 0, 1023, -35, 2)));                                      // knob 1 (41, A17)
+  VCF.frequency(mtof(kymap(analogRead(A14), 0, 1023, 50.0, 127.0)));                                // knob 2 (38, A14)
+  LFO.pulseWidth(kymap(analogRead(A14), 0, 1023, 0, 2));                                            // knob 3 (40, A16)
+  LFO.amplitude(dbtoa(kymap(analogRead(A15), 0, 1023, -65.0, 0.0 + dbtoa(-65.0)) - dbtoa(-65.0)));  // knob 4 (39, A15)
+  feedback.gain(3, mtof(kymap(analogRead(A10), 0, 1023, 0.0, 127.0)));                              // knob 5 (24, A10)
+  //offset.amplitude(map(analogRead(A16), 0, 1023, -1.0, 1.0));
+  // LFO.offset(map(analogRead(A16), 0, 1023, -0.5, 0.5)); // knob 5
+
   static float last = 0;
   float f = 0;
   if (abs(f - last) < 0.013) {
-    f = last; // ignore value that is not that different 
+    f = last;  // ignore value that is not that different
   }
   last = f;
   pitch.amplitude(f, 2);
 
   Serial.println(f, 5);
   delay(2);
-  
 }
 
 /*
