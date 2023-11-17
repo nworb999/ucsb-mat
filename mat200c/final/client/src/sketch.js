@@ -34,10 +34,12 @@ function setup() {
     rightTablePosition,
     bathroomPosition
   );
+
   game.chooseSeats();
 }
 
 function draw() {
   background(255);
   game.drawFurniture();
+  game.updateCharacters();
 }

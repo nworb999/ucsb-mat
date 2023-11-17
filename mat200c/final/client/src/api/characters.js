@@ -28,7 +28,7 @@ class Character {
 
   moveTo(seat) {
     // basically move one square closer to seat until seat is reached
-    this.position == seat.position ? (this.seat = seat) : update(this.position);
+    // this.position == seat.position ? (this.seat = seat) : update(this.position);
   }
 
   converseWith(otherCharacter) {

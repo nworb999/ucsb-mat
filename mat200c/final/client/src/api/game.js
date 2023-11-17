@@ -4,11 +4,11 @@ class Game {
   constructor(order, alignments, leftTable, rightTable, bathroom) {
     this.turn = "choosingSeats"; // 'choosingSeats' or 'conversing'
     this.order = order; // 'random', 'same', 'custom'
-    this.entranceOrder = this.generateEntranceOrder(characters, order); // order that characters walk in, to be generated later
     this.characters = this.createCharacters(alignments);
-    this.leftTable = Table(leftTable);
-    this.rightTable = Table(rightTable);
-    this.bathroom = Toilet(bathroom);
+    this.entranceOrder = this.generateEntranceOrder(this.characters, order); // order that characters walk in, to be generated later
+    this.leftTable = new Table(leftTable);
+    this.rightTable = new Table(rightTable);
+    this.bathroom = new Toilet(bathroom);
   }
 
   updateCharacters() {
@@ -23,9 +23,9 @@ class Game {
   }
 
   drawFurniture() {
-    this.leftTable(draw);
-    this.rightTable(draw);
-    this.bathroom(draw);
+    this.leftTable.draw();
+    this.rightTable.draw();
+    this.bathroom.draw();
   }
 
   generateEntranceOrder(characters, order) {

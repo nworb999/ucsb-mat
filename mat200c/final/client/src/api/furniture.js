@@ -9,6 +9,10 @@ class Table {
     this.characters.push(character);
   }
 
+  isFull() {}
+
+  getNextSeat() {}
+
   draw() {
     fill(200);
     rect(this.position.x, this.position.y, this.size, this.size);
@@ -48,6 +52,10 @@ class Toilet {
   addCharacter(character) {
     this.character = character;
   }
+
+  isFull() {}
+
+  getNextSeat() {}
 
   draw() {
     fill(100);
