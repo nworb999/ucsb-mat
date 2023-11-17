@@ -1,3 +1,14 @@
+class Table {
+  constructor(position) {
+    this.characters = [];
+    this.position = position;
+  }
+
+  addCharacter(character) {
+    this.characters.push(character);
+  }
+}
+
 function drawTable(x, y, size) {
   fill(200);
   rect(x, y, size, size);
