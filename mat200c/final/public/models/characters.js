@@ -21,13 +21,8 @@ export class Character {
     }
   }
 
-  chooseSeat(tables) {
-    // choose table and then seat
-    // Logic for choosing a seat based on alignment and relationships
-  }
-
   moveTo(targetPosition) {
-    const stepSize = 2; // Adjust the step size as needed
+    const stepSize = 2;
     if (Math.abs(this.position.x - targetPosition.x) > stepSize) {
       this.position.x +=
         this.position.x < targetPosition.x ? stepSize : -stepSize;
@@ -40,11 +35,22 @@ export class Character {
 
   drawCharacter() {
     this.p.fill(144, 238, 144); // Light green color
-    this.p.ellipse(this.position.x, this.position.y, 20, 20); // Radius of 20
+    this.p.ellipse(this.position.x, this.position.y, 20, 20);
   }
 
-  converseWith(table) {
-    // Logic for conversation
+  interactWith(otherCharacter) {
+    // Roll a 10-sided die to determine the outcome of the interaction
+    const outcome = Math.ceil(this.p.random(10));
+    // Find or create a relationship for the otherCharacter
+    let relationship = this.relationships.find(
+      (r) => r.character === otherCharacter
+    );
+    if (!relationship) {
+      relationship = { character: otherCharacter, scores: [] };
+      this.relationships.push(relationship);
+    }
+    // Store the outcome of the interaction
+    relationship.scores.push(outcome);
   }
 }
 

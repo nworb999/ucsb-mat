@@ -36,14 +36,11 @@ const mySketch = (p) => {
     };
 
     game = new Game(p, order, alignments, leftTable, rightTable, bathroom);
-    game.chooseSeats();
   };
 
   p.draw = () => {
-    p.background(255); // Clear the canvas
-    game.updateCharacters();
-    game.drawFurniture();
-    game.drawCharacters();
+    game.update();
+    game.drawAll();
   };
 };
 
