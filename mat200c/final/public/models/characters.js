@@ -5,7 +5,7 @@ class Alignment {
   }
 }
 
-class Character {
+export class Character {
   constructor(alignment, startOrder, x, y) {
     this.alignment = alignment;
     this.seat = null;

@@ -1,4 +1,4 @@
-class Table {
+export class Table {
   constructor(position, size) {
     this.characters = [];
     this.position = position; // { x, y }
@@ -13,7 +13,7 @@ class Table {
 
   getNextSeat() {}
 
-  draw() {
+  drawFigure() {
     fill(200);
     rect(this.position.x, this.position.y, this.size, this.size);
 
@@ -42,7 +42,7 @@ class Table {
   }
 }
 
-class Toilet {
+export class Toilet {
   constructor(position, stallSize) {
     this.position = position; // { centerX, centerY }
     this.stallSize = stallSize;
@@ -57,7 +57,7 @@ class Toilet {
 
   getNextSeat() {}
 
-  draw() {
+  drawFigure() {
     fill(100);
     rect(
       this.position.centerX - this.stallSize / 2,
@@ -81,5 +81,3 @@ class Toilet {
     );
   }
 }
-
-export { Table, Toilet };

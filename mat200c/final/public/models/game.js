@@ -1,4 +1,5 @@
 import { Table, Toilet } from "./furniture.js";
+import { Character } from "./characters.js";
 
 export class Game {
   constructor(order, alignments, leftTable, rightTable, bathroom) {
@@ -23,9 +24,9 @@ export class Game {
   }
 
   drawFurniture() {
-    this.leftTable.draw();
-    this.rightTable.draw();
-    this.bathroom.draw();
+    this.leftTable.drawFigure();
+    this.rightTable.drawFigure();
+    this.bathroom.drawFigure();
   }
 
   generateEntranceOrder(characters, order) {
