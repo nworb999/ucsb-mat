@@ -6,18 +6,18 @@ class Alignment {
 }
 
 export class Character {
-  constructor(alignment, startOrder, x, y) {
+  constructor(p, alignment, startOrder, x, y) {
+    this.p = p;
     this.alignment = alignment;
     this.seat = null;
-    this.relationships = []; // a matrix of each character combination and the relationship score from 1-10
+    this.relationships = [];
     this.startOrder = startOrder;
     this.position = { x, y };
   }
 
   update() {
-    // Update logic for character, e.g., moving towards a seat
-    if (this.seat && this.position !== this.seat.position) {
-      this.moveTo(this.seat);
+    if (this.seat) {
+      this.moveTo(this.seat.position);
     }
   }
 
@@ -26,12 +26,24 @@ export class Character {
     // Logic for choosing a seat based on alignment and relationships
   }
 
-  moveTo(seat) {
-    // basically move one square closer to seat until seat is reached
-    // this.position == seat.position ? (this.seat = seat) : update(this.position);
+  moveTo(targetPosition) {
+    const stepSize = 2; // Adjust the step size as needed
+    if (Math.abs(this.position.x - targetPosition.x) > stepSize) {
+      this.position.x +=
+        this.position.x < targetPosition.x ? stepSize : -stepSize;
+    }
+    if (Math.abs(this.position.y - targetPosition.y) > stepSize) {
+      this.position.y +=
+        this.position.y < targetPosition.y ? stepSize : -stepSize;
+    }
   }
 
-  converseWith(otherCharacter) {
+  drawCharacter() {
+    this.p.fill(144, 238, 144); // Light green color
+    this.p.ellipse(this.position.x, this.position.y, 20, 20); // Radius of 20
+  }
+
+  converseWith(table) {
     // Logic for conversation
   }
 }

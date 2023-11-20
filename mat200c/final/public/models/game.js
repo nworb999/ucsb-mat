@@ -6,22 +6,29 @@ export class Game {
     this.p = p;
     this.turn = "choosingSeats"; // 'choosingSeats' or 'conversing'
     this.order = order; // 'random', 'same', 'custom'
-    this.characters = this.createCharacters(alignments);
-    this.entranceOrder = this.generateEntranceOrder(this.characters, order); // order that characters walk in, to be generated later
     this.leftTable = new Table(p, leftTable.position, leftTable.size);
     this.rightTable = new Table(p, rightTable.position, rightTable.size);
     this.toilet = new Toilet(p, bathroom.position, bathroom.size);
-  }
-
-  updateCharacters() {
-    // Logic to update characters, e.g., moving them towards their seats
-    this.characters.forEach((character) => {
-      character.update(); // Assuming each character has an update method
-    });
+    this.characters = this.createCharacters(alignments);
+    this.entranceOrder = this.generateEntranceOrder(this.characters, order);
   }
 
   createCharacters(alignments) {
-    return alignments.map((alignment) => new Character(alignment));
+    let characters = [];
+    for (let i = 0; i < 9; i++) {
+      let x = 100; // Starting x position
+      let y = -50 * i; // Staggered starting y position above the canvas
+      let character = new Character(
+        this.p,
+        alignments[i % alignments.length],
+        i,
+        x,
+        y
+      );
+      character.seat = { position: this.toilet.position }; // Directly set the toilet's position as the target
+      characters.push(character);
+    }
+    return characters;
   }
 
   drawFurniture() {
@@ -40,17 +47,40 @@ export class Game {
     }
   }
 
+  updateCharacters() {
+    this.characters.forEach((character) => {
+      character.update();
+    });
+  }
+
+  drawCharacters() {
+    this.characters.forEach((character) => {
+      character.drawCharacter();
+    });
+  }
+
   chooseSeats() {
-    this.entranceOrder.forEach((character) => {
-      if (!this.leftTable.isFull()) {
-        character.moveTo(this.leftTable.getNextSeat());
-      } else if (!this.rightTable.isFull()) {
-        character.moveTo(this.rightTable.getNextSeat());
+    this.entranceOrder.forEach((character, index) => {
+      if (index < this.entranceOrder.length - 1) {
+        // All but the last character
+        let seat = this.leftTable.isFull()
+          ? this.rightTable.getNextSeat()
+          : this.leftTable.getNextSeat();
+        character.seat = seat;
       } else {
-        character.moveTo(this.bathroom.getSeat());
+        // Last character goes to the toilet
+        character.seat = { position: this.toilet.position };
       }
     });
     this.turn = "conversing";
+  }
+
+  updateCharacters() {
+    this.characters.forEach((character) => {
+      if (character.seat) {
+        character.moveTo(character.seat.position);
+      }
+    });
   }
 
   haveInteraction() {

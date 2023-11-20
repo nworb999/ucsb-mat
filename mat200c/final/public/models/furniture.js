@@ -6,42 +6,57 @@ export class Table {
     this.characters = [];
     this.position = position;
     this.size = size;
+    this.seats = [
+      {
+        x: position.x + size / 2,
+        y: position.y - (size * seatProportion) / 2,
+      },
+      {
+        x: position.x + size / 2,
+        y: position.y + size + (size * seatProportion) / 2,
+      },
+      {
+        x: position.x - (size * seatProportion) / 2,
+        y: position.y + size / 2,
+      },
+      {
+        x: position.x + size + (size * seatProportion) / 2,
+        y: position.y + size / 2,
+      },
+    ];
   }
 
   addCharacter(character) {
     this.characters.push(character);
   }
 
-  isFull() {}
+  isFull() {
+    return this.characters.length >= 4;
+  }
 
-  getNextSeat() {}
+  getNextSeat() {
+    for (let seat of this.seats) {
+      if (!seat.occupied) {
+        seat.occupied = true;
+        return { position: { x: seat.x, y: seat.y } };
+      }
+    }
+    return null; // No more seats available
+  }
 
   drawFigure() {
     this.p.fill(200);
     this.p.rect(this.position.x, this.position.y, this.size, this.size);
 
-    let seatDiameter = this.size * seatProportion;
-    this.p.fill(160);
-    this.p.ellipse(
-      this.position.x + this.size / 2,
-      this.position.y - seatDiameter / 2,
-      seatDiameter
-    );
-    this.p.ellipse(
-      this.position.x + this.size / 2,
-      this.position.y + this.size + seatDiameter / 2,
-      seatDiameter
-    );
-    this.p.ellipse(
-      this.position.x - seatDiameter / 2,
-      this.position.y + this.size / 2,
-      seatDiameter
-    );
-    this.p.ellipse(
-      this.position.x + this.size + seatDiameter / 2,
-      this.position.y + this.size / 2,
-      seatDiameter
-    );
+    this.seats.forEach((seat) => {
+      this.p.fill(160);
+      this.p.ellipse(
+        seat.x,
+        seat.y,
+        this.size * seatProportion,
+        this.size * seatProportion
+      );
+    });
   }
 }
 
