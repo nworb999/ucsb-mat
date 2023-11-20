@@ -2,14 +2,15 @@ import { Table, Toilet } from "./furniture.js";
 import { Character } from "./characters.js";
 
 export class Game {
-  constructor(order, alignments, leftTable, rightTable, bathroom) {
+  constructor(p, order, alignments, leftTable, rightTable, bathroom) {
+    this.p = p;
     this.turn = "choosingSeats"; // 'choosingSeats' or 'conversing'
     this.order = order; // 'random', 'same', 'custom'
     this.characters = this.createCharacters(alignments);
     this.entranceOrder = this.generateEntranceOrder(this.characters, order); // order that characters walk in, to be generated later
-    this.leftTable = new Table(leftTable);
-    this.rightTable = new Table(rightTable);
-    this.bathroom = new Toilet(bathroom);
+    this.leftTable = new Table(p, leftTable.position, leftTable.size);
+    this.rightTable = new Table(p, rightTable.position, rightTable.size);
+    this.toilet = new Toilet(p, bathroom.position, bathroom.size);
   }
 
   updateCharacters() {
@@ -26,7 +27,7 @@ export class Game {
   drawFurniture() {
     this.leftTable.drawFigure();
     this.rightTable.drawFigure();
-    this.bathroom.drawFigure();
+    this.toilet.drawFigure();
   }
 
   generateEntranceOrder(characters, order) {

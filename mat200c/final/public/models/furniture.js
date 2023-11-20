@@ -1,7 +1,10 @@
+const seatProportion = 0.3;
+
 export class Table {
-  constructor(position, size) {
+  constructor(p, position, size) {
+    this.p = p;
     this.characters = [];
-    this.position = position; // { x, y }
+    this.position = position;
     this.size = size;
   }
 
@@ -14,27 +17,27 @@ export class Table {
   getNextSeat() {}
 
   drawFigure() {
-    fill(200);
-    rect(this.position.x, this.position.y, this.size, this.size);
+    this.p.fill(200);
+    this.p.rect(this.position.x, this.position.y, this.size, this.size);
 
-    let seatDiameter = this.size * 0.3;
-    fill(160);
-    ellipse(
+    let seatDiameter = this.size * seatProportion;
+    this.p.fill(160);
+    this.p.ellipse(
       this.position.x + this.size / 2,
       this.position.y - seatDiameter / 2,
       seatDiameter
     );
-    ellipse(
+    this.p.ellipse(
       this.position.x + this.size / 2,
       this.position.y + this.size + seatDiameter / 2,
       seatDiameter
     );
-    ellipse(
+    this.p.ellipse(
       this.position.x - seatDiameter / 2,
       this.position.y + this.size / 2,
       seatDiameter
     );
-    ellipse(
+    this.p.ellipse(
       this.position.x + this.size + seatDiameter / 2,
       this.position.y + this.size / 2,
       seatDiameter
@@ -43,10 +46,11 @@ export class Table {
 }
 
 export class Toilet {
-  constructor(position, stallSize) {
-    this.position = position; // { centerX, centerY }
-    this.stallSize = stallSize;
-    this.character = null; // Assuming only one character can use the toilet at a time
+  constructor(p, position, size) {
+    this.p = p;
+    this.position = position;
+    this.size = size;
+    this.character = null;
   }
 
   addCharacter(character) {
@@ -58,24 +62,25 @@ export class Toilet {
   getNextSeat() {}
 
   drawFigure() {
-    fill(100);
-    rect(
-      this.position.centerX - this.stallSize / 2,
-      this.position.centerY - this.stallSize / 2,
-      this.stallSize,
-      this.stallSize
+    this.p.fill(100);
+    this.p.rect(
+      this.position.x - this.size / 2,
+      this.position.y - this.size / 2,
+      this.size,
+      this.size
     );
 
-    let toiletRadius = this.stallSize * 0.25;
+    let toiletRadius = this.size * seatProportion;
     let toiletRectWidth = toiletRadius * 1.7;
     let toiletRectHeight = toiletRadius;
 
-    fill(255);
-    ellipse(this.position.centerX, this.position.centerY, toiletRadius * 2);
-    fill(255);
-    rect(
-      this.position.centerX - toiletRectWidth / 2,
-      this.position.centerY - toiletRadius - toiletRectHeight / 2,
+    this.p.fill(255);
+    this.p.ellipse(this.position.x, this.position.y, toiletRadius * 2);
+
+    this.p.fill(255);
+    this.p.rect(
+      this.position.x - toiletRectWidth / 2,
+      this.position.y - toiletRadius - toiletRectHeight / 2,
       toiletRectWidth,
       toiletRectHeight
     );

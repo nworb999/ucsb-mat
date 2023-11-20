@@ -1,12 +1,11 @@
-import { Toilet, Table } from "./models/furniture.js";
 import { Game } from "./models/game.js";
 
-let game, toilet;
+let game;
 
 // instance mode workaround
 const mySketch = (p) => {
   p.setup = () => {
-    p.createCanvas(800, 800).background(100);
+    p.createCanvas(800, 800);
     let padding = 80;
 
     let squareSize = (p.width - padding * 4) / 3;
@@ -18,31 +17,31 @@ const mySketch = (p) => {
     const alignments = [{ name: "Type 1" }, { name: "Type 2" }];
 
     const leftTable = {
-      x: p.width / 4 - squareSize / 2,
-      y: (2 * p.height) / 5 - squareSize / 2,
+      position: {
+        x: p.width / 4 - squareSize / 2,
+        y: (2 * p.height) / 5 - squareSize / 2,
+      },
       size: squareSize,
     };
     const rightTable = {
-      x: (3 * p.width) / 4 - squareSize / 2,
-      y: (2 * p.height) / 5 - squareSize / 2,
+      position: {
+        x: (3 * p.width) / 4 - squareSize / 2,
+        y: (2 * p.height) / 5 - squareSize / 2,
+      },
       size: squareSize,
     };
     const bathroom = {
-      centerX: p.width / 2,
-      centerY: (5 * p.height) / 6 - stallSize / 2,
-      stallSize: 50,
+      position: { x: p.width / 2, y: (5 * p.height) / 6 - stallSize / 2 },
+      size: squareSize / 2,
     };
 
-    toilet = new Toilet(bathroom);
+    game = new Game(p, order, alignments, leftTable, rightTable, bathroom);
 
-    game = new Game(order, alignments, leftTable, rightTable, bathroom);
-
-    game.chooseSeats();
+    game.drawFurniture();
   };
 
   p.draw = () => {
-    //   // background(255);
-    //   // game.drawFurniture();
+    // game.chooseSeats();
     //   // game.updateCharacters();
   };
 };
