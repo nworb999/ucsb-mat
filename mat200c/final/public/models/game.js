@@ -2,41 +2,29 @@ import { Table, Toilet } from "./furniture.js";
 import { Character } from "./characters.js";
 
 export class Game {
-  constructor(p, order, alignments, leftTable, rightTable, bathroom) {
-    this.p = p;
-    this.turn = "choosingSeats"; // 'choosingSeats' or 'conversing'
+  constructor(order, alignments, names, leftTable, rightTable, bathroom) {
+    this.state = "choosingSeats"; // 'choosingSeats' or 'conversing'
+    this.turn = 0;
     this.order = order; // 'random', 'same', 'custom'
-    this.leftTable = new Table(p, leftTable.position, leftTable.size);
-    this.rightTable = new Table(p, rightTable.position, rightTable.size);
-    this.toilet = new Toilet(p, bathroom.position, bathroom.size);
-    this.characters = this.createCharacters(alignments);
+    this.leftTable = new Table(leftTable.position, leftTable.size);
+    this.rightTable = new Table(rightTable.position, rightTable.size);
+    this.toilet = new Toilet(bathroom.position, bathroom.size);
+    this.characters = this.createCharacters(alignments, names);
     this.entranceOrder = this.generateEntranceOrder(this.characters, order);
   }
 
-  createCharacters(alignments) {
+  createCharacters(alignments, names) {
     return Array.from({ length: 9 }, (_, i) => {
       const x = 100; // Starting x position
       const y = -50 * i; // Staggered starting y position above the canvas
-      return new Character(this.p, alignments[i % alignments.length], i, x, y);
+      return new Character(
+        alignments[i % alignments.length],
+        i,
+        names[i],
+        x,
+        y
+      );
     });
-  }
-
-  drawFurniture() {
-    this.leftTable.drawFigure();
-    this.rightTable.drawFigure();
-    this.toilet.drawFigure();
-  }
-
-  drawCharacters() {
-    this.characters.forEach((character) => {
-      character.drawCharacter();
-    });
-  }
-
-  drawAll() {
-    this.p.background(255);
-    this.drawFurniture();
-    this.drawCharacters();
   }
 
   generateEntranceOrder(characters, order) {
@@ -62,6 +50,20 @@ export class Game {
         this.toilet.addCharacter(character);
       }
     });
+  }
+
+  startGame() {
+    this.state = "choosingSeats";
+
+    this.resetCharacterPositions();
+
+    this.entranceOrder = this.generateEntranceOrder(
+      this.characters,
+      this.order
+    );
+
+    this.chooseSeats();
+    this.turn++;
   }
 
   updateCharacters() {
@@ -103,33 +105,29 @@ export class Game {
     this.toilet.addCharacter(null);
   }
 
-  startGame() {
-    this.turn = "choosingSeats";
-
-    this.resetCharacterPositions();
-
-    this.entranceOrder = this.generateEntranceOrder(
-      this.characters,
-      this.order
-    );
-
-    this.chooseSeats();
-  }
-
   update() {
     this.updateCharacters();
     this.drawAll();
-    if (this.turn === "choosingSeats") {
+    if (this.state === "choosingSeats") {
       const allSeated = this.characters.every((character) =>
         character.hasReachedSeat()
       );
       if (allSeated) {
-        this.turn = "conversing";
+        this.state = "conversing";
       }
-    } else if (this.turn === "conversing") {
+    } else if (this.state === "conversing") {
       this.haveInteractions();
       // You can put additional conversing logic here
       this.startGame();
     }
+  }
+
+  getState() {
+    return {
+      characters: this.characters.map((character) => character.getState()),
+      leftTable: this.leftTable.getState(),
+      rightTable: this.rightTable.getState(),
+      toilet: this.toilet.getState(),
+    };
   }
 }

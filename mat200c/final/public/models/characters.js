@@ -1,3 +1,5 @@
+import { Memory } from "./memory.js";
+
 class Alignment {
   constructor(name, compatibilityMatrix) {
     this.name = name;
@@ -5,16 +7,17 @@ class Alignment {
   }
 }
 
-const stepSize = 2;
+const stepSize = 5;
 
 export class Character {
-  constructor(p, alignment, startOrder, x, y) {
-    this.p = p;
+  constructor(alignment, startOrder, name, x, y) {
     this.alignment = alignment;
     this.seat = null;
     this.relationships = [];
     this.startOrder = startOrder;
     this.position = { x, y };
+    this.name = name;
+    this.memory = new Memory(this);
   }
 
   update() {
@@ -48,14 +51,13 @@ export class Character {
     }
   }
 
-  drawCharacter() {
-    this.p.fill(144, 238, 144); // Light green color
-    this.p.ellipse(this.position.x, this.position.y, 20, 20); // Radius of 20
+  getState() {
+    return { position: this.position };
   }
 
   interactWith(otherCharacter) {
     // Roll a 10-sided die to determine the outcome of the interaction
-    const outcome = Math.ceil(this.p.random(10));
+    const outcome = Math.ceil(Math.random(10));
     // Find or create a relationship for the otherCharacter
     let relationship = this.relationships.find(
       (r) => r.character === otherCharacter

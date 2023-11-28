@@ -1,47 +1,62 @@
-import { Game } from "./models/game.js";
+// Assuming Socket.IO client library is loaded in your HTML
 
-let game;
+import Draw from "./draw.js"; // Assuming you have draw.js in the public directory
 
-// instance mode workaround
+let draw;
+let gameState = {};
+let socket;
+let fetchInterval = 5000;
+
 const mySketch = (p) => {
   p.setup = () => {
     p.createCanvas(800, 800);
-    let padding = 80;
 
-    let squareSize = (p.width - padding * 4) / 3;
-    let stallSize =
-      (p.min(p.width - padding * 2, p.height - padding * 2 - squareSize) / 2) *
-      0.5;
+    draw = new Draw(p); // Initialize the Draw class with p5 instance
 
-    const order = "random";
-    const alignments = [{ name: "Type 1" }, { name: "Type 2" }];
+    startGame(); // Start the game
 
-    const leftTable = {
-      position: {
-        x: p.width / 4 - squareSize / 2,
-        y: (2 * p.height) / 5 - squareSize / 2,
-      },
-      size: squareSize,
-    };
-    const rightTable = {
-      position: {
-        x: (3 * p.width) / 4 - squareSize / 2,
-        y: (2 * p.height) / 5 - squareSize / 2,
-      },
-      size: squareSize,
-    };
-    const bathroom = {
-      position: { x: p.width / 2, y: (5 * p.height) / 6 - stallSize / 2 },
-      size: squareSize / 2,
-    };
+    socket = io.connect(window.location.origin);
+    socket.emit("requestUpdate");
 
-    game = new Game(p, order, alignments, leftTable, rightTable, bathroom);
-    game.startGame();
+    socket.on("gameState", (newGameState) => {
+      console.log(newGameState);
+      gameState = newGameState;
+    });
+
+    // Set up an interval to fetch the game state
+    setInterval(fetchGameState, fetchInterval);
   };
 
   p.draw = () => {
-    game.update();
+    p.background(255);
+    if (gameState.characters) {
+      draw.characters(gameState.characters);
+    }
+    if (gameState.leftTable && gameState.rightTable && gameState.toilet) {
+      draw.furniture(gameState);
+    }
   };
 };
+
+function startGame() {
+  fetch("/api/game/start", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data.message))
+    .catch((error) => console.error("Error:", error));
+}
+
+function fetchGameState() {
+  fetch("/api/game/state")
+    .then((response) => response.json())
+    .then((data) => {
+      gameState = data;
+    })
+    .catch((error) => console.error("Error fetching game state:", error));
+}
 
 new p5(mySketch);

@@ -1,27 +1,15 @@
-import fs from "fs";
-import path from "path";
-
-class Memory {
-  constructor(turn, character) {
-    this.turn = turn;
+export class Memory {
+  constructor(character) {
     this.character = character;
-    this.csvFilename = path.join(
-      process.cwd(),
-      "memory",
-      `memory_character_${this.character.number}.csv`
-    );
-    if (!fs.existsSync(path.dirname(this.csvFilename))) {
-      fs.mkdirSync(path.dirname(this.csvFilename));
-    }
-    this.csvHeader = "Turn,Character,Result,With\n";
-    fs.writeFileSync(this.csvFilename, this.csvHeader, "utf8");
+    this.pastConversations = [];
   }
 
-  remember(conversation) {
-    this.pastConversations.push(conversation);
-
-    const csvRow = `${this.state},${this.character.number},${conversation.result},${conversation.with.number}\n`;
-
-    fs.appendFileSync(this.csvFilename, csvRow, "utf8");
+  remember(turn, conversation) {
+    const conversationRecord = {
+      turn: turn,
+      result: conversation.result,
+      with: conversation.with.name,
+    };
+    this.pastConversations.push(conversationRecord);
   }
 }
