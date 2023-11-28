@@ -72,7 +72,6 @@ export class Game {
   }
 
   haveInteractions() {
-    console.log("HAVING INTERACTIONS");
     [(this.leftTable, this.rightTable)].forEach((table) => {
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
@@ -91,15 +90,27 @@ export class Game {
   resetCharacterPositions() {}
 
   restartGame() {
-    this.state = "choosingSeats";
-    // this.characters.forEach((character, index) => {
-    //   character.position.y = -50 * index;
-    //   character.seat = null;
-    // });
-    // this.entranceOrder = this.generateEntranceOrder(
-    //   this.characters,
-    //   this.order
-    // );
+    this.turn = "choosingSeats";
+
+    this.characters.forEach((character, index) => {
+      character.position = { x: 100, y: -50 * index };
+      character.seat = null;
+    });
+
+    [this.leftTable, this.rightTable].forEach((table) => {
+      table.seats.forEach((seat) => {
+        seat.occupied = false;
+      });
+      table.characters = [];
+    });
+    this.toilet.character = null;
+
+    this.entranceOrder = this.generateEntranceOrder(
+      this.characters,
+      this.order
+    );
+
+    this.chooseSeats();
   }
 
   update() {
