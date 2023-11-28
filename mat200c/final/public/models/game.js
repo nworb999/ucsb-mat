@@ -53,8 +53,8 @@ export class Game {
     this.entranceOrder.forEach((character, index) => {
       if (index < this.entranceOrder.length - 1) {
         let seat = this.leftTable.isFull()
-          ? this.rightTable.getNextSeat()
-          : this.leftTable.getNextSeat();
+          ? this.rightTable.getNextSeat(character)
+          : this.leftTable.getNextSeat(character);
         character.seat = seat;
       } else {
         // Last character goes to the toilet
@@ -72,7 +72,8 @@ export class Game {
   }
 
   haveInteractions() {
-    [this.leftTable, this.rightTable].forEach((table) => {
+    console.log("HAVING INTERACTIONS");
+    [(this.leftTable, this.rightTable)].forEach((table) => {
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
         .map((seat) => seat.character);

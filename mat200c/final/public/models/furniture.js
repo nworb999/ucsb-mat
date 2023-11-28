@@ -23,17 +23,18 @@ export class Table {
         x: this.position.x + this.size + offset,
         y: this.position.y + halfSize,
       },
-    ].map((seat) => ({ ...seat, occupied: false }));
+    ].map((seat) => ({ ...seat, occupied: false, character: null }));
   }
 
   isFull() {
     return this.seats.every((seat) => seat.occupied);
   }
 
-  getNextSeat() {
+  getNextSeat(character) {
     const seat = this.seats.find((seat) => !seat.occupied);
     if (seat) {
       seat.occupied = true;
+      seat.character = character;
       return { position: { x: seat.x, y: seat.y } };
     }
     return null;

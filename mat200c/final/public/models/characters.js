@@ -66,6 +66,7 @@ export class Character {
     }
     // Store the outcome of the interaction
     relationship.scores.push(outcome);
+    console.log(outcome);
   }
 }
 
