@@ -4,7 +4,7 @@ import { Character } from "./characters.js";
 export class Game {
   constructor(p, order, alignments, leftTable, rightTable, bathroom) {
     this.p = p;
-    this.state = "choosingSeats";
+    this.turn = "choosingSeats"; // 'choosingSeats' or 'conversing'
     this.order = order; // 'random', 'same', 'custom'
     this.leftTable = new Table(p, leftTable.position, leftTable.size);
     this.rightTable = new Table(p, rightTable.position, rightTable.size);
@@ -27,13 +27,16 @@ export class Game {
     this.toilet.drawFigure();
   }
 
+  drawCharacters() {
+    this.characters.forEach((character) => {
+      character.drawCharacter();
+    });
+  }
+
   drawAll() {
     this.p.background(255);
     this.drawFurniture();
-    this.characters.forEach((character) => {
-      character.update();
-      character.drawCharacter();
-    });
+    this.drawCharacters();
   }
 
   generateEntranceOrder(characters, order) {
@@ -46,18 +49,9 @@ export class Game {
     }
   }
 
-  drawCharacters() {
-    this.characters.forEach((character) => {
-      character.drawCharacter();
-    });
-  }
-
   chooseSeats() {
-    console.log(this.entranceOrder);
     this.entranceOrder.forEach((character, index) => {
-      console.log(character);
       if (index < this.entranceOrder.length - 1) {
-        // All but the last character
         let seat = this.leftTable.isFull()
           ? this.rightTable.getNextSeat()
           : this.leftTable.getNextSeat();
@@ -70,7 +64,7 @@ export class Game {
     this.turn = "conversing";
   }
 
-  updateCharacterPositions() {
+  updateCharacters() {
     this.characters.forEach((character) => {
       if (character.seat) {
         character.moveTo(character.seat.position);
@@ -111,7 +105,8 @@ export class Game {
   update() {
     if (this.state === "choosingSeats") {
       this.chooseSeats();
-      this.updateCharacterPositions();
+      this.updateCharacters();
+      this.drawAll();
     } else if (this.state === "conversing") {
       const conversation = new Conversation(this.characters, "Some topic");
       conversation.start();

@@ -3,11 +3,9 @@ const seatProportion = 0.3;
 export class Table {
   constructor(p, position, size) {
     this.p = p;
-    this.characters = [];
     this.position = position;
     this.size = size;
     this.seats = this.createSeats();
-    this.occupiedSeats = 0;
   }
 
   createSeats() {
@@ -29,15 +27,13 @@ export class Table {
   }
 
   isFull() {
-    return this.occupiedSeats >= 4;
+    return this.seats.every((seat) => seat.occupied);
   }
 
   getNextSeat() {
     const seat = this.seats.find((seat) => !seat.occupied);
     if (seat) {
       seat.occupied = true;
-      this.occupiedSeats++;
-
       return { position: { x: seat.x, y: seat.y } };
     }
     return null;
@@ -61,15 +57,8 @@ export class Toilet {
     this.character = null;
   }
 
-  isFull() {}
-
-  getNextSeat() {
-    if (!this.character) {
-      this.character = {}; // Placeholder for the character, should be replaced with actual character reference
-      // Return the position of the "seat" in the toilet
-      return { position: { x: this.position.x, y: this.position.y } };
-    }
-    return null; // The toilet is "full"
+  addCharacter(character) {
+    this.character = character;
   }
 
   drawFigure() {

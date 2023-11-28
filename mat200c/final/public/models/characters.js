@@ -21,8 +21,13 @@ export class Character {
     }
   }
 
+  chooseSeat(tables) {
+    // choose table and then seat
+    // Logic for choosing a seat based on alignment and relationships
+  }
+
   moveTo(targetPosition) {
-    const stepSize = 2;
+    const stepSize = 2; // Adjust the step size as needed
     if (Math.abs(this.position.x - targetPosition.x) > stepSize) {
       this.position.x +=
         this.position.x < targetPosition.x ? stepSize : -stepSize;
@@ -35,7 +40,7 @@ export class Character {
 
   drawCharacter() {
     this.p.fill(144, 238, 144); // Light green color
-    this.p.ellipse(this.position.x, this.position.y, 20, 20);
+    this.p.ellipse(this.position.x, this.position.y, 20, 20); // Radius of 20
   }
 
   interactWith(otherCharacter) {
