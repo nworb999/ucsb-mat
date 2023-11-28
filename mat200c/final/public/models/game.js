@@ -59,6 +59,7 @@ export class Game {
       } else {
         // Last character goes to the toilet
         character.seat = { position: this.toilet.position };
+        this.toilet.addCharacter(character);
       }
     });
   }
@@ -87,11 +88,7 @@ export class Game {
     });
   }
 
-  resetCharacterPositions() {}
-
-  restartGame() {
-    this.turn = "choosingSeats";
-
+  resetCharacterPositions() {
     this.characters.forEach((character, index) => {
       character.position = { x: 100, y: -50 * index };
       character.seat = null;
@@ -103,7 +100,13 @@ export class Game {
       });
       table.characters = [];
     });
-    this.toilet.character = null;
+    this.toilet.addCharacter(null);
+  }
+
+  startGame() {
+    this.turn = "choosingSeats";
+
+    this.resetCharacterPositions();
 
     this.entranceOrder = this.generateEntranceOrder(
       this.characters,
@@ -126,7 +129,7 @@ export class Game {
     } else if (this.turn === "conversing") {
       this.haveInteractions();
       // You can put additional conversing logic here
-      this.restartGame();
+      this.startGame();
     }
   }
 }

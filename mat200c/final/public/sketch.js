@@ -36,7 +36,7 @@ const mySketch = (p) => {
     };
 
     game = new Game(p, order, alignments, leftTable, rightTable, bathroom);
-    game.chooseSeats();
+    game.startGame();
   };
 
   p.draw = () => {
