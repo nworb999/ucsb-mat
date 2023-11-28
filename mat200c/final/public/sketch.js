@@ -5,16 +5,14 @@ import Draw from "./draw.js"; // Assuming you have draw.js in the public directo
 let draw;
 let gameState = {};
 let socket;
-let fetchInterval = 5000;
+let fetchInterval = 500;
 
 const mySketch = (p) => {
   p.setup = () => {
     p.createCanvas(800, 800);
 
-    draw = new Draw(p); // Initialize the Draw class with p5 instance
-
-    startGame(); // Start the game
-
+    draw = new Draw(p);
+    startGame();
     socket = io.connect(window.location.origin);
     socket.emit("requestUpdate");
 
@@ -23,8 +21,7 @@ const mySketch = (p) => {
       gameState = newGameState;
     });
 
-    // Set up an interval to fetch the game state
-    setInterval(fetchGameState, fetchInterval);
+    // setInterval(fetchGameState, fetchInterval);
   };
 
   p.draw = () => {

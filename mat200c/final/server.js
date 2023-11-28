@@ -1,6 +1,5 @@
 import express from "express";
 import { createServer } from "http";
-import { Server } from "socket.io";
 import { Game } from "./public/models/game.js";
 import gameStateRouter, { setGame } from "./public/api/gameState.js";
 import memory from "./public/api/memory.js";
