@@ -40,10 +40,7 @@ const mySketch = (p) => {
   };
 
   p.draw = () => {
-    p.background(255);
-    game.updateCharacters();
-    // game.update();
-    game.drawAll();
+    game.update();
   };
 };
 

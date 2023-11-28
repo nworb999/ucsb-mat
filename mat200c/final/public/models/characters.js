@@ -5,6 +5,8 @@ class Alignment {
   }
 }
 
+const stepSize = 2;
+
 export class Character {
   constructor(p, alignment, startOrder, x, y) {
     this.p = p;
@@ -26,8 +28,16 @@ export class Character {
     // Logic for choosing a seat based on alignment and relationships
   }
 
+  hasReachedSeat() {
+    const tolerance = stepSize;
+    return (
+      this.seat &&
+      Math.abs(this.position.x - this.seat.position.x) <= tolerance &&
+      Math.abs(this.position.y - this.seat.position.y) <= tolerance
+    );
+  }
+
   moveTo(targetPosition) {
-    const stepSize = 2; // Adjust the step size as needed
     if (Math.abs(this.position.x - targetPosition.x) > stepSize) {
       this.position.x +=
         this.position.x < targetPosition.x ? stepSize : -stepSize;

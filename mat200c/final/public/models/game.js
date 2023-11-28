@@ -61,7 +61,6 @@ export class Game {
         character.seat = { position: this.toilet.position };
       }
     });
-    this.turn = "conversing";
   }
 
   updateCharacters() {
@@ -92,25 +91,29 @@ export class Game {
 
   restartGame() {
     this.state = "choosingSeats";
-    this.characters.forEach((character, index) => {
-      character.position.y = -50 * index;
-      character.seat = null;
-    });
-    this.entranceOrder = this.generateEntranceOrder(
-      this.characters,
-      this.order
-    );
+    // this.characters.forEach((character, index) => {
+    //   character.position.y = -50 * index;
+    //   character.seat = null;
+    // });
+    // this.entranceOrder = this.generateEntranceOrder(
+    //   this.characters,
+    //   this.order
+    // );
   }
 
   update() {
-    if (this.state === "choosingSeats") {
-      this.chooseSeats();
-      this.updateCharacters();
-      this.drawAll();
-    } else if (this.state === "conversing") {
-      const conversation = new Conversation(this.characters, "Some topic");
-      conversation.start();
-      console.log(conversation.summary);
+    this.updateCharacters();
+    this.drawAll();
+    if (this.turn === "choosingSeats") {
+      const allSeated = this.characters.every((character) =>
+        character.hasReachedSeat()
+      );
+      if (allSeated) {
+        this.turn = "conversing";
+      }
+    } else if (this.turn === "conversing") {
+      this.haveInteractions();
+      // You can put additional conversing logic here
       this.restartGame();
     }
   }
