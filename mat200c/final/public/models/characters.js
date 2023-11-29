@@ -1,5 +1,3 @@
-import { Memory } from "./memory.js";
-
 class Alignment {
   constructor(name, compatibilityMatrix) {
     this.name = name;
@@ -10,14 +8,13 @@ class Alignment {
 const stepSize = 5;
 
 export class Character {
-  constructor(alignment, startOrder, name, x, y) {
+  constructor(alignment, startOrder, x, y) {
     this.alignment = alignment;
     this.seat = null;
     this.relationships = [];
     this.startOrder = startOrder;
     this.position = { x, y };
-    this.name = name;
-    this.memory = new Memory(this);
+    // this.memory = new Memory(this); // factor this out into a separate API call
   }
 
   update() {

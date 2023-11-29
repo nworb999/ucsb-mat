@@ -2,28 +2,22 @@ import { Table, Toilet } from "./furniture.js";
 import { Character } from "./characters.js";
 
 export class Game {
-  constructor(order, alignments, names, leftTable, rightTable, bathroom) {
+  constructor(order, alignments, leftTable, rightTable, bathroom) {
     this.state = "choosingSeats"; // 'choosingSeats' or 'conversing'
     this.turn = 0;
     this.order = order; // 'random', 'same', 'custom'
     this.leftTable = new Table(leftTable.position, leftTable.size);
     this.rightTable = new Table(rightTable.position, rightTable.size);
     this.toilet = new Toilet(bathroom.position, bathroom.size);
-    this.characters = this.createCharacters(alignments, names);
-    this.entranceOrder = this.generateEntranceOrder(this.characters, order);
+    this.characters = this.createCharacters(alignments);
+    this.entranceOrder = null;
   }
 
-  createCharacters(alignments, names) {
+  createCharacters(alignments) {
     return Array.from({ length: 9 }, (_, i) => {
-      const x = 100; // Starting x position
-      const y = -50 * i; // Staggered starting y position above the canvas
-      return new Character(
-        alignments[i % alignments.length],
-        i,
-        names[i],
-        x,
-        y
-      );
+      const x = 100;
+      const y = -50 * i;
+      return new Character(alignments[i % alignments.length], i, x, y);
     });
   }
 
@@ -107,7 +101,6 @@ export class Game {
 
   update() {
     this.updateCharacters();
-    this.drawAll();
     if (this.state === "choosingSeats") {
       const allSeated = this.characters.every((character) =>
         character.hasReachedSeat()

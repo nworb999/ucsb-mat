@@ -4,33 +4,25 @@ import Draw from "./draw.js"; // Assuming you have draw.js in the public directo
 
 let draw;
 let gameState = {};
-let socket;
-let fetchInterval = 500;
+let fetchInterval = 50;
+
+startGame();
 
 const mySketch = (p) => {
   p.setup = () => {
     p.createCanvas(800, 800);
-
     draw = new Draw(p);
-    startGame();
-    socket = io.connect(window.location.origin);
-    socket.emit("requestUpdate");
 
-    socket.on("gameState", (newGameState) => {
-      console.log(newGameState);
-      gameState = newGameState;
-    });
-
-    // setInterval(fetchGameState, fetchInterval);
+    setInterval(fetchGameState, fetchInterval);
   };
 
   p.draw = () => {
     p.background(255);
-    if (gameState.characters) {
-      draw.characters(gameState.characters);
-    }
     if (gameState.leftTable && gameState.rightTable && gameState.toilet) {
       draw.furniture(gameState);
+    }
+    if (gameState.characters) {
+      draw.characters(gameState.characters);
     }
   };
 };
