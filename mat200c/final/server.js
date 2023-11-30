@@ -16,6 +16,7 @@ const httpServer = createServer(app);
 const port = 3000;
 const updateInterval = 50;
 
+// should the domain model layer be in this server.js file at all or should it only make API calls?
 const game = new Game(order, alignments, leftTable, rightTable, bathroom);
 setGame(game);
 

@@ -11,6 +11,11 @@ export class Game {
     this.toilet = new Toilet(bathroom.position, bathroom.size);
     this.characters = this.createCharacters(alignments);
     this.entranceOrder = null;
+    this.memory = {};
+  }
+
+  setMemory(memory) {
+    this.memory = memory ? memory : this.memory;
   }
 
   createCharacters(alignments) {
@@ -68,7 +73,9 @@ export class Game {
     });
   }
 
-  haveInteractions() {
+  haveInteractions(memory) {
+    const conversations = [];
+    const topic = "the weather";
     [(this.leftTable, this.rightTable)].forEach((table) => {
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
@@ -77,11 +84,22 @@ export class Game {
       seatedCharacters.forEach((character) => {
         seatedCharacters.forEach((otherCharacter) => {
           if (character !== otherCharacter) {
-            character.interactWith(otherCharacter);
+            const outcome = character.interactWith(
+              otherCharacter,
+              memory ? memory[character.name] : null,
+              topic
+            );
+            conversations.push({
+              turn: this.turn,
+              character: character,
+              otherCharacter: otherCharacter,
+              outcome,
+            });
           }
         });
       });
     });
+    this.memory = conversations;
   }
 
   resetCharacterPositions() {
@@ -108,10 +126,9 @@ export class Game {
       if (allSeated) {
         this.state = "conversing";
       }
-    } else if (this.state === "conversing") {
-      this.haveInteractions();
-      // You can put additional conversing logic here
-      this.startGame();
+    }
+    if (this.state === "conversing") {
+      this.haveInteractions(this.memory);
     }
   }
 
@@ -121,6 +138,9 @@ export class Game {
       leftTable: this.leftTable.getState(),
       rightTable: this.rightTable.getState(),
       toilet: this.toilet.getState(),
+      state: this.state,
+      memory: this.memory,
+      turn: this.turn,
     };
   }
 }

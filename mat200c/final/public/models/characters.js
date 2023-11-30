@@ -1,3 +1,5 @@
+import { Conversation } from "./conversation.js";
+
 class Alignment {
   constructor(name, compatibilityMatrix) {
     this.name = name;
@@ -11,10 +13,8 @@ export class Character {
   constructor(alignment, startOrder, x, y) {
     this.alignment = alignment;
     this.seat = null;
-    this.relationships = [];
     this.startOrder = startOrder;
     this.position = { x, y };
-    // this.memory = new Memory(this); // factor this out into a separate API call
   }
 
   update() {
@@ -25,7 +25,6 @@ export class Character {
 
   chooseSeat(tables) {
     // choose table and then seat
-    // Logic for choosing a seat based on alignment and relationships
   }
 
   hasReachedSeat() {
@@ -52,31 +51,17 @@ export class Character {
     return { position: this.position };
   }
 
-  interactWith(otherCharacter) {
-    // Roll a 10-sided die to determine the outcome of the interaction
-    const outcome = Math.ceil(Math.random(10));
-    // Find or create a relationship for the otherCharacter
-    let relationship = this.relationships.find(
-      (r) => r.character === otherCharacter
+  // this isn't being called :thinkingface:
+  interactWith(otherCharacter, relationship, topic) {
+    const conversation = new Conversation(
+      this,
+      otherCharacter.name,
+      relationship,
+      topic
     );
-    if (!relationship) {
-      relationship = { character: otherCharacter, scores: [] };
-      this.relationships.push(relationship);
-    }
-    // Store the outcome of the interaction
-    relationship.scores.push(outcome);
-    console.log(outcome);
-  }
-}
 
-class Relationship {
-  constructor() {
-    this.score = 3; // Default score
-    this.history = [];
-  }
+    const outcome = conversation.start();
 
-  updateScore(newScore) {
-    this.history.push(this.score);
-    this.score = newScore;
+    return outcome;
   }
 }

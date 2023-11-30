@@ -1,15 +1,21 @@
 export class Memory {
   constructor(character) {
-    this.character = character;
-    this.pastConversations = [];
+    this.character = character.name;
+    this.pastConversations = this.remember(character)
+      ? this.remember(character)
+      : [];
   }
 
-  remember(turn, conversation) {
-    const conversationRecord = {
+  // i think this is totally unused now lmao delete
+
+  remember(character) {}
+
+  store(turn, conversation) {
+    this.pastConversations.push({
       turn: turn,
       result: conversation.result,
+      summary: conversation.summary,
       with: conversation.with.name,
-    };
-    this.pastConversations.push(conversationRecord);
+    });
   }
 }
