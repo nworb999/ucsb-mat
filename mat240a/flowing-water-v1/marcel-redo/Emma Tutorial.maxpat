@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 240.0, 892.0, 848.0 ],
+		"rect" : [ 34.0, 100.0, 1444.0, 848.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -531,7 +531,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 41.5, 147.0, 193.0, 20.0 ],
-					"text" : "0 2 3 5 7 8 10 12 10 8 7 5 3 2 0"
+					"text" : "0 2 4 5 7 9 11 12 11 9 7 5 4 2 0"
 				}
 
 			}
@@ -1396,7 +1396,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "stringSustain.maxpat",
-				"bootpath" : "~/Downloads/Emma Tutorial",
+				"bootpath" : "~/Documents/code/ucsb-mat/mat240a/flowing-water-v1/marcel-redo",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1

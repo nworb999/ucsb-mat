@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 122.0, 1444.0, 848.0 ],
+		"rect" : [ 34.0, 100.0, 1444.0, 848.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -47,7 +47,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 316.0, 330.0, 50.0, 35.0 ],
-					"text" : "621.496599"
+					"text" : "1242.993197"
 				}
 
 			}
@@ -444,7 +444,7 @@
 					"numinlets" : 3,
 					"numoutlets" : 2,
 					"outlettype" : [ "signal", "signal" ],
-					"patching_rect" : [ 42.0, 262.05418719211832, 123.0, 22.0 ],
+					"patching_rect" : [ 42.0, 262.05418719211832, 84.0, 22.0 ],
 					"text" : "groove~ pluck"
 				}
 
