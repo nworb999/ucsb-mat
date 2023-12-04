@@ -3,17 +3,16 @@ import { retrieveMemories, storeMemories } from "./utils.js";
 
 const router = express.Router();
 
-router.post("/retrieve", (req, res) => {
+router.get("/retrieve", (req, res) => {
   console.log(`${new Date().toISOString()} :: retrieving character memories`);
 
-  const characters = req.body.characters;
-  const allConversations = retrieveMemories(characters);
+  const allConversations = retrieveMemories();
+  console.log(allConversations);
   res.json(allConversations);
 });
 
 router.post("/store", (req, res) => {
-  const { memory } = req.body.memory;
-
+  const memory = req.body.memory;
   console.log(`${new Date().toISOString()} :: storing character memories`);
   if (!memory || memory.length === 0) {
     return res.status(304).end();

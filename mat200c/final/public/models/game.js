@@ -47,7 +47,7 @@ export class Game {
         // Last character goes to the toilet
         character.seat = { position: this.toilet.position };
         this.toilet.addCharacter(character);
-        console.log(character.alignment.name, " on toilet in ", this.turn);
+        console.log(character.alignment.name, "on toilet in turn", this.turn);
       }
     });
   }
@@ -75,6 +75,7 @@ export class Game {
   }
 
   haveInteractions(memory) {
+    console.log(memory.length);
     const conversations = [];
     const topic = "the weather";
     [(this.leftTable, this.rightTable)].forEach((table) => {

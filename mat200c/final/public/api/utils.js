@@ -7,20 +7,19 @@ if (!fs.existsSync(memoryDirectory)) {
   fs.mkdirSync(memoryDirectory);
 }
 
-function readMemoryCSV(characterName) {
-  const csvFilename = path.join(
-    memoryDirectory,
-    `memory_character_${characterName}.csv`
-  );
+function readMemoryCSV() {
+  const csvFilename = path.join(memoryDirectory, `memory.csv`);
 
   if (!fs.existsSync(csvFilename)) {
     return [];
   }
 
   const csvContent = fs.readFileSync(csvFilename, "utf8");
+  console.log("csv content", csvContent);
   const lines = csvContent.split("\n").slice(1);
+  console.log("lines", lines);
   return lines
-    .filter((line) => line)
+    .filter((line) => line.trim())
     .map((line) => {
       const [turn, result, withCharacter] = line.split(",");
       return { turn, result, with: withCharacter };
@@ -41,6 +40,7 @@ export function retrieveMemories(characters) {
   if (Array.isArray(characters)) {
     characters.forEach(({ name }) => {
       const pastConversations = readMemoryCSV(name);
+      console.log(pastConversations);
       allConversations[name] = pastConversations;
     });
   }

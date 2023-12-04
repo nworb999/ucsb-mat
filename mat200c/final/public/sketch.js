@@ -35,8 +35,6 @@ function startGame() {
   }).then((response) => response.json());
 }
 
-// when conversing, wait til conversing, then read memory !  which will continue converstation and thus the game
-
 function refreshGameMemory() {
   readMemoryData();
   setGameMemory(gameState.memory);
@@ -69,7 +67,6 @@ function fetchGameState() {
 }
 
 function setGameMemory(memory) {
-  console.log("setting this ", memory);
   fetch("/api/game/remember", {
     method: "POST",
     headers: {
@@ -82,7 +79,6 @@ function setGameMemory(memory) {
 }
 
 function storeCharacterMemory(memory) {
-  console.log("storeCharacterMemory", memory);
   fetch("/api/memory/store", {
     method: "POST",
     headers: {
@@ -94,29 +90,20 @@ function storeCharacterMemory(memory) {
   })
     .then((response) => {
       if (response.status === 304) {
-        console.log("No new memory to store");
+        console.log("no new memory to store");
         return null; // No content to parse
       } else {
         return response.json();
       }
     })
-    .then((data) => console.log("Memory stored for character", data))
+    .then((data) => console.log("memory stored for character"))
     .catch((error) => console.error("Error storing memory:", error));
 }
 
 function readMemoryData() {
-  fetch("/api/memory/retrieve", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      characters: gameState.characters,
-    }),
-  })
+  fetch("/api/memory/retrieve")
     .then((response) => response.json())
     .then((memoryData) => {
-      console.log("readMemoryData", memoryData);
       gameState.memory = memoryData;
     })
     .catch((error) => console.error("Error fetching memory:", error));
