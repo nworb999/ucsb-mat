@@ -52,6 +52,7 @@ export class Game {
   }
 
   startGame() {
+    this.turn++;
     this.state = "choosingSeats";
 
     this.resetCharacterPositions();
@@ -62,7 +63,6 @@ export class Game {
     );
 
     this.chooseSeats();
-    this.turn++;
   }
 
   updateCharacters() {
@@ -74,6 +74,7 @@ export class Game {
   }
 
   haveInteractions(memory) {
+    console.log("conversing", this.turn);
     const conversations = [];
     const topic = "the weather";
     [(this.leftTable, this.rightTable)].forEach((table) => {
@@ -99,6 +100,7 @@ export class Game {
         });
       });
     });
+    console.log({ conversations });
     this.memory = conversations;
   }
 

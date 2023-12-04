@@ -53,8 +53,6 @@ function fetchGameState() {
         gameState.state === "choosingSeats" &&
         previousGameState === "conversing"
       ) {
-        console.log("storing char memory in sketch");
-        console.log(gameState.turn);
         storeCharacterMemory();
       }
       if (
@@ -91,7 +89,6 @@ function storeCharacterMemory() {
     },
     body: JSON.stringify({
       memory: gameState.memory,
-      turn: gameState.turn,
     }),
   })
     .then((response) => {
