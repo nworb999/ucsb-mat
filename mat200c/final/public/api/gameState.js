@@ -15,12 +15,10 @@ router.post("/start", (req, res) => {
 });
 
 router.post("/remember", (req, res) => {
+  const { memory } = req.body.memory;
   if (game) {
-    console.log(
-      `${new Date().toISOString()} :: setting memory : `,
-      req.body.memory
-    );
-    game.setMemory(req.body.memory);
+    console.log(`${new Date().toISOString()} :: setting memory : `, memory);
+    game.setMemory(memory);
     res.json({ message: "memory set" });
   } else {
     res.status(400).json({ message: "memory not set" });

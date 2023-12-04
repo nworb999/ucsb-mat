@@ -51,11 +51,10 @@ export class Character {
     return { position: this.position };
   }
 
-  // this isn't being called :thinkingface:
   interactWith(otherCharacter, relationship, topic) {
     const conversation = new Conversation(
       this,
-      otherCharacter.name,
+      otherCharacter.alignment.name,
       relationship,
       topic
     );

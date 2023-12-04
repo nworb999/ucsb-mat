@@ -38,11 +38,10 @@ const updateCSV = (filename, character, otherCharacter, turn, result) => {
 
 export function retrieveMemories(characters) {
   let allConversations = {};
-
   if (Array.isArray(characters)) {
-    characters.forEach((characterName) => {
-      const pastConversations = readMemoryCSV(characterName);
-      allConversations[characterName] = pastConversations;
+    characters.forEach(({ name }) => {
+      const pastConversations = readMemoryCSV(name);
+      allConversations[name] = pastConversations;
     });
   }
 
@@ -50,16 +49,10 @@ export function retrieveMemories(characters) {
 }
 
 export function storeMemories(memories) {
-  if (!memories || memories.length === 0) {
-    return res.status(304).end();
-  }
   memories.forEach((conversation) => {
     const { turn, character, otherCharacter, outcome } = conversation;
 
-    const csvFilename = path.join(
-      memoryDirectory,
-      `memory_character_${character.alignment.name.replace(" ", "_")}.csv`
-    );
+    const csvFilename = path.join(memoryDirectory, `memory.csv`);
 
     updateCSV(
       csvFilename,

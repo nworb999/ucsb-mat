@@ -1,10 +1,9 @@
 import Draw from "./draw.js";
 
 let draw;
-let gameState = {};
+let gameState = { memory: {}, characters: [] };
 let fetchInterval = 50;
 let previousGameState = "";
-let memory = {};
 
 startGame();
 
@@ -40,7 +39,7 @@ function startGame() {
 
 function refreshGameMemory() {
   readMemoryData();
-  setGameMemory(memory);
+  setGameMemory(gameState.memory);
 }
 
 function fetchGameState() {
@@ -53,7 +52,7 @@ function fetchGameState() {
         gameState.state === "choosingSeats" &&
         previousGameState === "conversing"
       ) {
-        storeCharacterMemory();
+        storeCharacterMemory(gameState.memory);
       }
       if (
         gameState.state === "conversing" &&
@@ -70,25 +69,27 @@ function fetchGameState() {
 }
 
 function setGameMemory(memory) {
+  console.log("setting this ", memory);
   fetch("/api/game/remember", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(memory),
+    body: JSON.stringify({ memory }),
   })
     .then((response) => response.json())
     .catch((error) => console.error("Error:", error));
 }
 
-function storeCharacterMemory() {
+function storeCharacterMemory(memory) {
+  console.log("storeCharacterMemory", memory);
   fetch("/api/memory/store", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      memory: gameState.memory,
+      memory,
     }),
   })
     .then((response) => {
@@ -104,10 +105,19 @@ function storeCharacterMemory() {
 }
 
 function readMemoryData() {
-  fetch("/api/memory/retrieve")
+  fetch("/api/memory/retrieve", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      characters: gameState.characters,
+    }),
+  })
     .then((response) => response.json())
     .then((memoryData) => {
-      memory = memoryData;
+      console.log("readMemoryData", memoryData);
+      gameState.memory = memoryData;
     })
     .catch((error) => console.error("Error fetching memory:", error));
 }
