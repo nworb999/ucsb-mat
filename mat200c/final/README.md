@@ -1,5 +1,7 @@
 # public experiment #1
 
+* clone the repo 
+
 * create `.env` file using `.env.example` and add your chatGPT API key
 
 * `npm install && npm start`

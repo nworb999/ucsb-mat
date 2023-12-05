@@ -1,8 +1,11 @@
 import express from "express";
+import dotenv from "dotenv";
+import OpenAI from "openai";
 import { createServer } from "http";
 import { Game } from "./public/models/game.js";
 import gameStateRouter, { setGame } from "./public/api/gameState.js";
-import memory from "./public/api/memory.js";
+import memoryRouter from "./public/api/memory.js";
+import chatRouter, { setOpenAI } from "./public/api/chat.js";
 import {
   order,
   alignments,
@@ -10,13 +13,25 @@ import {
   rightTable,
   bathroom,
 } from "./constants.js";
+import { rateLimit } from "./src/middleware/rateLimit.js";
+
+dotenv.config();
+
+const openai = new OpenAI(process.env.OPENAI_API_KEY);
+setOpenAI(openai);
 
 const app = express();
 const httpServer = createServer(app);
 const port = 3000;
 const updateInterval = 50;
 
-// should the domain model layer be in this server.js file at all or should it only make API calls?
+const apiLimiter = rateLimit({
+  limit: 100, // Max 100 requests
+  windowMs: 15 * 60 * 1000, // 15 minutes window
+});
+
+// should the domain model layer be in this server.js file at all
+// or should it only make API calls?
 const game = new Game(order, alignments, leftTable, rightTable, bathroom);
 setGame(game);
 
@@ -25,8 +40,9 @@ setInterval(() => {
 }, updateInterval);
 
 app.use(express.json());
-app.use("/api/memory", memory);
+app.use("/api/memory", memoryRouter);
 app.use("/api/game", gameStateRouter);
+app.use("/api/chat", chatRouter, apiLimiter);
 
 app.use(express.static("public"));
 

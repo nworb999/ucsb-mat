@@ -41,22 +41,3 @@ function setGame(gameInstance) {
 }
 
 export { router as default, setGame };
-export function handleGameState() {
-  if (
-    gameState.state === "choosingSeats" &&
-    previousGameState === "conversing" &&
-    gameState.outcomes.length
-  ) {
-    storeNewMemories(gameState.outcomes);
-  }
-  if (
-    gameState.state === "conversing" &&
-    previousGameState === "choosingSeats"
-  ) {
-    if (gameState.turn !== 1) {
-      console.log("refreshing game memory in sketch");
-      refreshGameMemory();
-    }
-    startGame();
-  }
-}

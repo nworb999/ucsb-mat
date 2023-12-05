@@ -79,11 +79,10 @@ export class Game {
     const conversations = [];
     const topic = "the weather";
     [this.leftTable, this.rightTable].forEach((table) => {
-      console.log({ table });
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
         .map((seat) => seat.character);
-      // console.log({ seatedCharacters });
+
       seatedCharacters.forEach((character) => {
         seatedCharacters.forEach((otherCharacter) => {
           if (character !== otherCharacter) {

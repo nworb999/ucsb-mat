@@ -18,4 +18,4 @@ router.post("/store", (req, res) => {
   res.json({ message: "Memories stored successfully" });
 });
 
-export default router;
+export { router as default };
