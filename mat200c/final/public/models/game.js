@@ -76,14 +76,10 @@ export class Game {
   }
 
   haveInteractions(memory) {
-    console.log(
-      `${this.turn} having interactions with memory length ::`,
-      Object.keys(memory).length
-    );
     const conversations = [];
     const topic = "the weather";
-    [(this.leftTable, this.rightTable)].forEach((table) => {
-      // console.log({ table });
+    [this.leftTable, this.rightTable].forEach((table) => {
+      console.log({ table });
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
         .map((seat) => seat.character);

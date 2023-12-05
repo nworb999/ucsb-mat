@@ -92,7 +92,6 @@ function handleGameState() {
     previousGameState === "conversing" &&
     gameState.outcomes.length
   ) {
-    console.log("storing memories ~", gameState.outcomes.length);
     storeNewMemories(gameState.outcomes);
   }
   if (
