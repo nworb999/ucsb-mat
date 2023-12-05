@@ -15,51 +15,52 @@ function readMemoryCSV() {
   }
 
   const csvContent = fs.readFileSync(csvFilename, "utf8");
-  console.log("csv content", csvContent);
   const lines = csvContent.split("\n").slice(1);
-  console.log("lines", lines);
   return lines
     .filter((line) => line.trim())
     .map((line) => {
-      const [turn, result, withCharacter] = line.split(",");
-      return { turn, result, with: withCharacter };
+      const [turn, character, otherCharacter, outcome] = line.split(",");
+      return { turn, character, otherCharacter, outcome };
     });
 }
 
-const updateCSV = (filename, character, otherCharacter, turn, result) => {
-  let csvContent =
-    fs.existsSync(filename) && turn !== 1
-      ? fs.readFileSync(filename, "utf8")
-      : "Turn,Character,OtherCharacter,Outcome\n";
-  csvContent += `${turn},${character},${otherCharacter},${result}\n`;
+function formatMemoryData(memoryData) {
+  const formattedData = {};
+
+  memoryData.forEach(({ character, otherCharacter, outcome }) => {
+    if (!formattedData[character]) {
+      formattedData[character] = {};
+    }
+    if (!formattedData[character][otherCharacter]) {
+      formattedData[character][otherCharacter] = [];
+    }
+    formattedData[character][otherCharacter].push(outcome);
+  });
+  return formattedData;
+}
+
+const updateCSV = (filename, memories) => {
+  let csvContent = "Turn,Character,OtherCharacter,Outcome\n";
+
+  const resetFile = memories.some((memory) => memory.turn === 1);
+
+  if (fs.existsSync(filename) && !resetFile) {
+    csvContent = fs.readFileSync(filename, "utf8");
+  }
+  memories.forEach(({ turn, character, otherCharacter, outcome }) => {
+    csvContent += `${turn},${character.alignment.name},${otherCharacter.alignment.name},${outcome}\n`;
+  });
+
   fs.writeFileSync(filename, csvContent, "utf8");
 };
 
-export function retrieveMemories(characters) {
-  let allConversations = {};
-  if (Array.isArray(characters)) {
-    characters.forEach(({ name }) => {
-      const pastConversations = readMemoryCSV(name);
-      console.log(pastConversations);
-      allConversations[name] = pastConversations;
-    });
-  }
-
-  return allConversations;
+export function retrieveMemories() {
+  const allConversations = readMemoryCSV();
+  return formatMemoryData(allConversations);
 }
 
 export function storeMemories(memories) {
-  memories.forEach((conversation) => {
-    const { turn, character, otherCharacter, outcome } = conversation;
+  const csvFilename = path.join(memoryDirectory, `memory.csv`);
 
-    const csvFilename = path.join(memoryDirectory, `memory.csv`);
-
-    updateCSV(
-      csvFilename,
-      character.alignment.name,
-      otherCharacter.alignment.name,
-      turn,
-      outcome
-    );
-  });
+  updateCSV(csvFilename, memories);
 }

@@ -19,7 +19,7 @@ router.post("/remember", (req, res) => {
   if (game) {
     console.log(
       `${new Date().toISOString()} :: setting memory : `,
-      memory.length
+      Object.keys(memory).length
     );
     game.setMemory(memory);
     res.json({ message: "memory set" });

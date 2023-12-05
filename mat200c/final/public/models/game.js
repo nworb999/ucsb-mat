@@ -12,6 +12,7 @@ export class Game {
     this.characters = this.createCharacters(alignments);
     this.entranceOrder = null;
     this.memory = {};
+    this.outcomes = [];
   }
 
   setMemory(memory) {
@@ -75,14 +76,18 @@ export class Game {
   }
 
   haveInteractions(memory) {
-    console.log(memory.length);
+    console.log(
+      `${this.turn} having interactions with memory length ::`,
+      Object.keys(memory).length
+    );
     const conversations = [];
     const topic = "the weather";
     [(this.leftTable, this.rightTable)].forEach((table) => {
+      // console.log({ table });
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
         .map((seat) => seat.character);
-
+      // console.log({ seatedCharacters });
       seatedCharacters.forEach((character) => {
         seatedCharacters.forEach((otherCharacter) => {
           if (character !== otherCharacter) {
@@ -101,7 +106,7 @@ export class Game {
         });
       });
     });
-    this.memory = conversations;
+    this.outcomes = conversations;
   }
 
   resetCharacterPositions() {
@@ -140,8 +145,9 @@ export class Game {
       rightTable: this.rightTable.getState(),
       toilet: this.toilet.getState(),
       state: this.state,
-      memory: this.memory,
+      memory: this.memory, // maybe unneeded
       turn: this.turn,
+      outcomes: this.outcomes,
     };
   }
 }

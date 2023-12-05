@@ -7,17 +7,15 @@ router.get("/retrieve", (req, res) => {
   console.log(`${new Date().toISOString()} :: retrieving character memories`);
 
   const allConversations = retrieveMemories();
-  console.log(allConversations);
+  console.log("keys", Object.keys(allConversations).slice(0, 5));
   res.json(allConversations);
 });
 
 router.post("/store", (req, res) => {
-  const memory = req.body.memory;
+  const outcomes = req.body.outcomes;
+  console.log("OUTCOMES BEING STORED", outcomes);
   console.log(`${new Date().toISOString()} :: storing character memories`);
-  if (!memory || memory.length === 0) {
-    return res.status(304).end();
-  }
-  storeMemories(memory);
+  storeMemories(outcomes);
 
   res.json({ message: "Memories stored successfully" });
 });

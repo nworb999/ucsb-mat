@@ -52,6 +52,9 @@ export class Character {
   }
 
   interactWith(otherCharacter, relationship, topic) {
+    console.log(
+      `${this.alignment.name} interacting with ${otherCharacter.alignment.name}`
+    );
     const conversation = new Conversation(
       this,
       otherCharacter.alignment.name,
