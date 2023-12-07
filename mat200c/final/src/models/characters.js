@@ -48,7 +48,7 @@ export class Character {
   }
 
   getState() {
-    return { position: this.position };
+    return { position: this.position, alignment: this.alignment };
   }
 
   interactWith(otherCharacter, relationship, topic) {
