@@ -1,4 +1,5 @@
 import { getConversationTopicAndAffinities } from "../backend-services/topicService.js";
+import { chatService } from "../api/chat.js";
 
 export async function runConversationPrompts(gameState) {
   const leftTable = gameState.leftTable;
@@ -28,8 +29,12 @@ export async function runConversationPrompts(gameState) {
 
   const rightTablePrompt = formatPrompts(rightTableTopic, rightTableAffinities);
   const leftTablePrompt = formatPrompts(leftTableTopic, leftTableAffinities);
-  console.log(rightTablePrompt);
-  return { leftTablePrompt, rightTablePrompt };
+
+  const leftTableResponse = await chatService.sendPrompt(leftTablePrompt);
+  const rightTableResponse = await chatService.sendPrompt(rightTablePrompt);
+  console.log({ leftTableResponse });
+  console.log({ rightTableResponse });
+  return { leftTableResponse, rightTableResponse };
 }
 
 function formatPrompts(topic, affinities) {

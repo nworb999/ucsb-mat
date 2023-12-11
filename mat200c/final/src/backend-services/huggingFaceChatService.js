@@ -7,16 +7,15 @@ export class HuggingFaceChatService extends ChatService {
   }
 
   async sendPrompt(prompt) {
-    console.log({ prompt });
+    console.log(prompt);
     const response = await this.huggingface.conversational({
       model: "microsoft/DialoGPT-large",
       inputs: {
-        // past_user_inputs: ["Which movie is the best ?"],
-        // generated_responses: ["It is Die Hard for sure."],
-        text: "Which movie is the best ?",
+        text: prompt, //"Return 4 random numbers between 1 and 10",
       },
     });
     const result = response["generated_text"];
+    console.log({ result });
     return result;
   }
 }
