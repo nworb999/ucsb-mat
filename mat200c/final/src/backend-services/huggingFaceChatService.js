@@ -7,6 +7,7 @@ export class HuggingFaceChatService extends ChatService {
   }
 
   async sendPrompt(prompt) {
+    console.log({ prompt });
     const response = await this.huggingface.conversational({
       model: "microsoft/DialoGPT-large",
       inputs: {

@@ -1,4 +1,5 @@
 import { refreshGameMemory, storeNewMemories } from "./memory.js";
+import { generateExpectedConversation } from "./chat.js";
 
 let gameState = { characters: [], outcomes: [] };
 let previousGameState = "";
@@ -58,10 +59,12 @@ export function handleGameState() {
     gameState.state === "conversing" &&
     previousGameState === "choosingSeats"
   ) {
+    generateExpectedConversation(gameState);
     if (gameState.turn !== 1) {
       console.log("refreshing game memory in sketch");
       refreshGameMemory();
     }
+
     startGame();
   }
 }

@@ -1,13 +1,12 @@
-export async function prompt(prompt) {
+export async function generateExpectedConversation(gameState) {
   try {
     const response = await fetch("/api/chat/prompt", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ gameState }),
     });
-
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

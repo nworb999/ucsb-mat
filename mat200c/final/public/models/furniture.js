@@ -43,7 +43,10 @@ export class Table {
     return {
       position: this.position,
       size: this.size,
-      seats: this.seats.map((seat) => ({ position: { x: seat.x, y: seat.y } })),
+      seats: this.seats.map((seat) => ({
+        position: { x: seat.x, y: seat.y },
+        character: seat.character,
+      })),
     };
   }
 }

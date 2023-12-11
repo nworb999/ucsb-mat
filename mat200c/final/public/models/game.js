@@ -13,10 +13,15 @@ export class Game {
     this.entranceOrder = null;
     this.memory = {};
     this.outcomes = [];
+    this.converation = {};
   }
 
   setMemory(memory) {
     this.memory = memory ? memory : this.memory;
+  }
+
+  setConversation(content) {
+    this.converation = content ? content : this.converation;
   }
 
   createCharacters(alignments) {
@@ -75,9 +80,9 @@ export class Game {
     });
   }
 
-  haveInteractions(memory) {
+  haveInteractions(memory, content) {
     const conversations = [];
-    const topic = "the weather";
+
     [this.leftTable, this.rightTable].forEach((table) => {
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
@@ -89,7 +94,7 @@ export class Game {
             const outcome = character.interactWith(
               otherCharacter,
               memory ? memory[character.alignment.name] : null,
-              topic
+              content ? content[character.alignment.name] : null
             );
             conversations.push({
               turn: this.turn,
@@ -129,7 +134,7 @@ export class Game {
       }
     }
     if (this.state === "conversing") {
-      this.haveInteractions(this.memory);
+      this.haveInteractions(this.memory, this.converationContent);
     }
   }
 

@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import { createServer } from "http";
-import { Game } from "./src/models/game.js";
+import { Game } from "./public/models/game.js";
 import { HfInference } from "@huggingface/inference";
-import { OpenAI } from "openai";
+// import { OpenAI } from "openai";
 import { HuggingFaceChatService } from "./src/backend-services/huggingFaceChatService.js";
 import gameStateRouter, { setGame } from "./src/api/gameState.js";
 import memoryRouter from "./src/api/memory.js";
@@ -37,8 +37,6 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes window
 });
 
-// should the domain model layer be in this server.js file at all
-// or should it only make API calls?
 const game = new Game(order, alignments, leftTable, rightTable, bathroom);
 setGame(game);
 

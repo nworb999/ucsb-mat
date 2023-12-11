@@ -1,12 +1,5 @@
 import { Conversation } from "./conversation.js";
 
-class Alignment {
-  constructor(name, compatibilityMatrix) {
-    this.name = name;
-    this.compatibilityMatrix = compatibilityMatrix;
-  }
-}
-
 const stepSize = 5;
 
 export class Character {
@@ -51,7 +44,7 @@ export class Character {
     return { position: this.position, alignment: this.alignment };
   }
 
-  interactWith(otherCharacter, relationship, topic) {
+  interactWith(otherCharacter, relationship, content) {
     console.log(
       `${this.alignment.name} interacting with ${otherCharacter.alignment.name}`
     );
@@ -59,7 +52,7 @@ export class Character {
       this,
       otherCharacter.alignment.name,
       relationship,
-      topic
+      content
     );
 
     const outcome = conversation.start();
