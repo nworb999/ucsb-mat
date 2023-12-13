@@ -11,7 +11,7 @@ export class HuggingFaceChatService extends ChatService {
     const response = await this.huggingface.conversational({
       model: "microsoft/DialoGPT-large",
       inputs: {
-        text: prompt, //"Return 4 random numbers between 1 and 10",
+        text: prompt, // "Return 4 random numbers between 1 and 10",
       },
     });
     const result = response["generated_text"];

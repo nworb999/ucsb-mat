@@ -11,7 +11,7 @@ const cafeteriaTopics = [
   "Politics",
 ];
 
-const topicAffinityScores = {
+export const topicAffinityScores = {
   "Chaotic Good": {
     LocalEvents: 4,
     Sports: 3,

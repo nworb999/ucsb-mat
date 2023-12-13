@@ -1,10 +1,9 @@
-import Draw from "./services/draw.js";
-import { generateExpectedConversation } from "./services/chat.js";
+import Draw from "./frontend-services/draw.js";
 import {
   startGame,
   fetchGameState,
   drawGameState,
-} from "./services/gameState.js";
+} from "./frontend-services/gameState.js";
 
 let fetchInterval = 50;
 let draw;

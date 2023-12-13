@@ -1,6 +1,47 @@
 import { getConversationTopicAndAffinities } from "../backend-services/topicService.js";
 import { chatService } from "../api/chat.js";
 
+export async function runDumbConversationPrompts(gameState) {
+  const leftTable = gameState.leftTable;
+  const rightTable = gameState.rightTable;
+
+  // this will be combined with memory in the interactWith function to produce the final result
+  const { topic: leftTableTopic, affinities: leftTableAffinities } =
+    getConversationTopicAndAffinities(
+      leftTable.seats.map(
+        ({
+          character: {
+            alignment: { name },
+          },
+        }) => name
+      )
+    );
+  const { topic: rightTableTopic, affinities: rightTableAffinities } =
+    getConversationTopicAndAffinities(
+      rightTable.seats.map(
+        ({
+          character: {
+            alignment: { name },
+          },
+        }) => name
+      )
+    );
+
+  const leftTableResponse = await chatService.sendPrompt({
+    characters: leftTableAffinities,
+    topic: leftTableTopic,
+  });
+
+  console.log({ leftTableResponse });
+
+  const rightTableResponse = await chatService.sendPrompt({
+    characters: rightTableAffinities,
+    topic: rightTableTopic,
+  });
+  return { leftTableResponse, rightTableResponse };
+}
+
+// run this for openAI or hugging face chat services
 export async function runConversationPrompts(gameState) {
   const leftTable = gameState.leftTable;
   const rightTable = gameState.rightTable;
@@ -32,8 +73,6 @@ export async function runConversationPrompts(gameState) {
 
   const leftTableResponse = await chatService.sendPrompt(leftTablePrompt);
   const rightTableResponse = await chatService.sendPrompt(rightTablePrompt);
-  console.log({ leftTableResponse });
-  console.log({ rightTableResponse });
   return { leftTableResponse, rightTableResponse };
 }
 

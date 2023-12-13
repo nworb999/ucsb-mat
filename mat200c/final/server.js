@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import { createServer } from "http";
-import { Game } from "./public/models/game.js";
-import { HfInference } from "@huggingface/inference";
+import { Game } from "./src/models/game.js";
+// import { HfInference } from "@huggingface/inference";
 // import { OpenAI } from "openai";
-import { HuggingFaceChatService } from "./src/backend-services/huggingFaceChatService.js";
+// import { HuggingFaceChatService } from "./src/backend-services/huggingFaceService.js";
 import gameStateRouter, { setGame } from "./src/api/gameState.js";
 import memoryRouter from "./src/api/memory.js";
 import chatRouter, { setChatService } from "./src/api/chat.js";
@@ -16,16 +16,19 @@ import {
   bathroom,
 } from "./constants.js";
 import { rateLimit } from "./src/middleware/rateLimit.js";
+import { DumbChatService } from "./src/backend-services/dumbService.js";
 
 dotenv.config();
 
 // const openai = new OpenAI(process.env.OPENAI_API_KEY);
 // const openAIChatService = new OpenAIChatService(openai);
 
-const huggingFace = new HfInference(process.env.HUGGING_FACE_API_KEY);
-const huggingFaceChatService = new HuggingFaceChatService(huggingFace);
+// const huggingFace = new HfInference(process.env.HUGGING_FACE_API_KEY);
+// const huggingFaceChatService = new HuggingFaceChatService(huggingFace);
 
-setChatService(huggingFaceChatService);
+const dumbChatService = new DumbChatService();
+
+setChatService(dumbChatService);
 
 const app = express();
 const httpServer = createServer(app);
