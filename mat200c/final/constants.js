@@ -38,3 +38,7 @@ export const bathroom = {
   position: { x: width / 2, y: (5 * height) / 6 - stallSize / 2 },
   size: squareSize / 2,
 };
+
+export const ascii = `
+█▀█ █░█ █▄▄ █░░ █ █▀▀   █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀   ▄█
+█▀▀ █▄█ █▄█ █▄▄ █ █▄▄   ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░   ░█`;

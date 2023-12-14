@@ -9,11 +9,37 @@ export class Conversation {
 
   start() {
     // rename to `converse`
-    // use relationship here
-    this.outcome = Math.ceil(Math.random() * 10); // Simulating a 10-sided die roll
-    const topic = "the weather";
-    const summary = `Character ${this.character.alignment.name} interacted with [${this.targetName}] while discussing ${topic} and rolled an ${this.outcome}.\n`;
+    // const topic = "the weather"; eventually pass through the actual topic
 
-    return this.outcome;
+    let weightedScore = 5; // defaults to 5
+
+    if (
+      this.content &&
+      this.relationship &&
+      this.content[this.targetName] &&
+      this.relationship[this.targetName]
+    ) {
+      const contentScore = this.content[this.targetName] || 5;
+
+      const relationshipArray = this.relationship[this.targetName] || [];
+
+      const relationshipAverage =
+        relationshipArray.length > 0
+          ? relationshipArray.reduce((sum, value) => sum + parseInt(value), 0) /
+            relationshipArray.length
+          : 0;
+
+      const weightedScore = contentScore * relationshipAverage;
+      this.outcome = weightedScore;
+
+      console.log(
+        `${new Date().toISOString()} :: Character ${
+          this.character.alignment.name
+        } interacted with ${
+          this.targetName
+        } and achieved a weighted score of ${weightedScore}.\n`
+      );
+    }
+    return weightedScore;
   }
 }

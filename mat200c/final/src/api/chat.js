@@ -13,9 +13,11 @@ router.post("/prompt", async (req, res) => {
     // const { leftTableResponse, rightTableResponse } =
     //   runConversationPrompts(gameState);
     const { leftTableResponse, rightTableResponse } =
-      runDumbConversationPrompts(gameState);
+      await runDumbConversationPrompts(gameState);
 
-    const response = { message: { leftTableResponse, rightTableResponse } };
+    const response = {
+      message: { leftTable: leftTableResponse, rightTable: rightTableResponse },
+    };
     res.json(response);
   } catch (error) {
     res.status(500).json({ error: error.message });

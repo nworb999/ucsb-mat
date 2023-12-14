@@ -53,7 +53,12 @@ export class Game {
         // Last character goes to the toilet
         character.seat = { position: this.toilet.position };
         this.toilet.addCharacter(character);
-        console.log(character.alignment.name, "on toilet in turn", this.turn);
+        console.log(
+          `${new Date().toISOString()} ::`,
+          character.alignment.name,
+          "on toilet in turn",
+          this.turn
+        );
       }
     });
   }
@@ -83,7 +88,17 @@ export class Game {
   haveInteractions(memory, content) {
     const conversations = [];
 
-    [this.leftTable, this.rightTable].forEach((table) => {
+    [
+      { side: "left", ...this.leftTable },
+      { side: "right", ...this.rightTable },
+    ].forEach((table) => {
+      let tableContent;
+      if (table.side === "left" && content) {
+        tableContent = content.leftTable;
+      }
+      if (table.side === "right" && content) {
+        tableContent = content.rightTable;
+      }
       const seatedCharacters = table.seats
         .filter((seat) => seat.occupied)
         .map((seat) => seat.character);
@@ -94,7 +109,7 @@ export class Game {
             const outcome = character.interactWith(
               otherCharacter,
               memory ? memory[character.alignment.name] : null,
-              content ? content[character.alignment.name] : null
+              tableContent ? tableContent[character.alignment.name] : null
             );
             conversations.push({
               turn: this.turn,
@@ -134,7 +149,7 @@ export class Game {
       }
     }
     if (this.state === "conversing") {
-      this.haveInteractions(this.memory, this.converationContent);
+      this.haveInteractions(this.memory, this.converation.message);
     }
   }
 

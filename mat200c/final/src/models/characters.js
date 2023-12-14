@@ -1,5 +1,7 @@
 import { Conversation } from "./conversation.js";
 
+// really need to reconsider the variable names between conversation and content ... next time map out models FIRST
+
 const stepSize = 5;
 
 export class Character {

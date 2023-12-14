@@ -32,8 +32,6 @@ export async function runDumbConversationPrompts(gameState) {
     topic: leftTableTopic,
   });
 
-  console.log({ leftTableResponse });
-
   const rightTableResponse = await chatService.sendPrompt({
     characters: rightTableAffinities,
     topic: rightTableTopic,

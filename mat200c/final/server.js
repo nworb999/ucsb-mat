@@ -9,6 +9,7 @@ import gameStateRouter, { setGame } from "./src/api/gameState.js";
 import memoryRouter from "./src/api/memory.js";
 import chatRouter, { setChatService } from "./src/api/chat.js";
 import {
+  ascii,
   order,
   alignments,
   leftTable,
@@ -56,4 +57,5 @@ app.use(express.static("public"));
 
 httpServer.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+  console.log(ascii);
 });

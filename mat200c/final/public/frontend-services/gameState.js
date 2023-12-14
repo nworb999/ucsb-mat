@@ -26,12 +26,24 @@ export function fetchGameState() {
 }
 
 export function setGameMemory(memory) {
-  fetch("/api/game/remember", {
+  fetch("/api/game/memory", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ memory }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.error("Error:", error));
+}
+
+export function setGameConversation(conversation) {
+  fetch("/api/game/conversation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ conversation }),
   })
     .then((response) => response.json())
     .catch((error) => console.error("Error:", error));
@@ -47,7 +59,7 @@ export function drawGameState(draw) {
   }
 }
 
-export function handleGameState() {
+export async function handleGameState() {
   if (
     gameState.state === "choosingSeats" &&
     previousGameState === "conversing" &&
@@ -59,7 +71,8 @@ export function handleGameState() {
     gameState.state === "conversing" &&
     previousGameState === "choosingSeats"
   ) {
-    generateExpectedConversation(gameState);
+    const conversation = await generateExpectedConversation(gameState);
+    setGameConversation(conversation);
     if (gameState.turn !== 1) {
       console.log("refreshing game memory in sketch");
       refreshGameMemory();
