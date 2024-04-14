@@ -1,6 +1,6 @@
 import express from "express";
 import { ChatService } from "../backend-services/chatService.js";
-import { runDumbConversationPrompts } from "../utils/chat.js";
+import { runDumbConversationPrompts } from "../utils/prompts.js";
 
 const router = express.Router();
 
@@ -10,8 +10,10 @@ router.post("/prompt", async (req, res) => {
   try {
     const gameState = req.body.gameState;
 
+    // for use with not dumb chat services
     // const { leftTableResponse, rightTableResponse } =
     //   runConversationPrompts(gameState);
+
     const { leftTableResponse, rightTableResponse } =
       await runDumbConversationPrompts(gameState);
 

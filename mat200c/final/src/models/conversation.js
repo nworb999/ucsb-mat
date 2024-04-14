@@ -29,17 +29,17 @@ export class Conversation {
             relationshipArray.length
           : 0;
 
-      const weightedScore = contentScore * relationshipAverage;
-      this.outcome = weightedScore;
+      weightedScore = contentScore * relationshipAverage;
+      this.outcome = 1 + (weightedScore % 10);
 
       console.log(
         `${new Date().toISOString()} :: Character ${
           this.character.alignment.name
-        } interacted with ${
-          this.targetName
-        } and achieved a weighted score of ${weightedScore}.\n`
+        } interacted with ${this.targetName} and achieved a weighted score of ${
+          this.outcome
+        }.\n`
       );
     }
-    return weightedScore;
+    return this.outcome;
   }
 }
